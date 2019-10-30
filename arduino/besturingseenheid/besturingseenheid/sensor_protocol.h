@@ -1,11 +1,3 @@
-/*
- * sensor_data.h
- *
- * Created: 5-11-2018 15:19:38
- *  Author: dprei
- */ 
-
-
 #ifndef SENSOR_DATA_H_
 #define SENSOR_DATA_H_
 
