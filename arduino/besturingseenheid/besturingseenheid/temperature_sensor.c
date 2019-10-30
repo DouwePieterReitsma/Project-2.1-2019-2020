@@ -24,6 +24,11 @@ float get_temperature_in_celsius(void)
     return temperature;
 }
 
+float get_average_temperature_in_celsius(void)
+{
+	return average_temperature;
+}
+
 void measure_temperature(void)
 {
     static int index = 0;

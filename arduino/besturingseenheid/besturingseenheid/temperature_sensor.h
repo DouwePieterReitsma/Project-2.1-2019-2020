@@ -5,6 +5,8 @@
 
 void init_temperature_sensor(void);
 float get_temperature_in_celsius(void);
+float get_average_temperature_in_celsius(void);
+
 
 // scheduler callback functions
 void measure_temperature(void);
