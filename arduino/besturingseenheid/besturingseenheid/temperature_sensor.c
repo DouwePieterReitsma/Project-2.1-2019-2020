@@ -1,14 +1,7 @@
-/*
- * temperature_sensor.c
- *
- * Created: 2-11-2018 15:57:44
- *  Author: dprei
- */ 
-
 #include "temperature_sensor.h"
-#include "../common/analog.h"
-#include "../common/serial.h"
-#include "../common/sensor_protocol.h"
+#include "analog.h"
+#include "serial.h"
+#include "sensor_protocol.h"
 
 #define NUM_TEMPERATURES 40
 

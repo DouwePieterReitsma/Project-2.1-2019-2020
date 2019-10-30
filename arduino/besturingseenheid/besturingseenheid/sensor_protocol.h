@@ -1,23 +1,12 @@
 #ifndef SENSOR_DATA_H_
 #define SENSOR_DATA_H_
 
-typedef enum
-{
-    SENSOR_TYPE_TEMPERATURE = 0,
-    SENSOR_TYPE_LIGHT = 1,
-    SENSOR_TYPE_DISTANCE = 2
-} SensorType;
 
 typedef struct
 {
-    SensorType type;
-    
-    union
-    {
-        float distance;
-        float temperature;
-        int light_intensity;
-    } data;    
+	int light_intensity;
+	float temperature;
+	float distance;
 } SensorData;
 
 int serialize_sensor_data(SensorData* data, char* buffer);

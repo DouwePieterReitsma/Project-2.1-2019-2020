@@ -105,6 +105,7 @@
   <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
   <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
   <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.linker.general.UseVprintfLibrary>True</avrgcc.linker.general.UseVprintfLibrary>
   <avrgcc.linker.libraries.Libraries>
     <ListValues>
       <Value>libm</Value>
@@ -120,7 +121,43 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="analog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="analog.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="AVR_TTC_scheduler.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="AVR_TTC_scheduler.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sensor_protocol.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sensor_protocol.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="serial.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="serial.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="temperature_sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="temperature_sensor.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
