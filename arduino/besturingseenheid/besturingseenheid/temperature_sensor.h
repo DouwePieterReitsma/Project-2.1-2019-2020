@@ -9,7 +9,6 @@ float get_temperature_in_celsius(void);
 // scheduler callback functions
 void measure_temperature(void);
 void calculate_average_temperature(void);
-void transmit_average_temperature(void);
 
 
 #endif /* TEMPERATURE_SENSOR_H_ */

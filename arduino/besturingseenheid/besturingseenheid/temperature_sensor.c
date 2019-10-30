@@ -49,20 +49,3 @@ void calculate_average_temperature(void)
     
     average_temperature /= NUM_TEMPERATURES;
 }
-
-void transmit_average_temperature(void)
-{
-    char buffer[100];
-    SensorData data;
-    int result = 0;
-    
-    data.type = SENSOR_TYPE_TEMPERATURE;
-    data.data.temperature = average_temperature;
-    
-    result = serialize_sensor_data(&data, buffer);
-    
-    if (result)
-    {
-        transmit_message(buffer);
-    }
-}
