@@ -2,6 +2,7 @@
 #include "analog.h"
 #include "serial.h"
 #include "sensor_protocol.h"
+#include "rolluik.h"
 
 #define NUM_LIGHTINTENSITIES 30
 

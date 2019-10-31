@@ -6,6 +6,8 @@
 
 #include <avr/io.h>
 
+#include "rolluik.h"
+
 #include "temperature_sensor.h"
 
 #include "light_sensor.h"
@@ -20,6 +22,8 @@ int main(void)
 {
 	init_serial_port();
 	
+	init_rolluik_leds();
+	
 	init_temperature_sensor();
 	
 	init_light_sensor();
@@ -28,8 +32,8 @@ int main(void)
 	
 	//SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
 	//SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
-	SCH_Add_Task(&measure_light_intensity, 0, 100);
-	SCH_Add_Task(&calculate_average_light_intensity, 3000, 3000);
+	SCH_Add_Task(&measure_light_intensity, 0, 100); // measure lightintensity every second
+	SCH_Add_Task(&calculate_average_light_intensity, 3000, 3000); // calculate average temperature every 30 seconds
 	
 	SCH_Add_Task(&test, 6000, 6000); // transmit sensor data temperature every 60 seconds
 	

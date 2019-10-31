@@ -149,6 +149,12 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="rolluik.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rolluik.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="sensor_protocol.c">
       <SubType>compile</SubType>
     </Compile>
