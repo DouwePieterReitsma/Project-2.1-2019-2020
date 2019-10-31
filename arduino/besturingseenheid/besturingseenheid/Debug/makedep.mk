@@ -8,6 +8,8 @@ AVR_TTC_scheduler.c
 
 config.c
 
+light_sensor.c
+
 main.c
 
 sensor_protocol.c

@@ -40,6 +40,7 @@ C_SRCS +=  \
 ../analog.c \
 ../AVR_TTC_scheduler.c \
 ../config.c \
+../light_sensor.c \
 ../main.c \
 ../sensor_protocol.c \
 ../serial.c \
@@ -56,6 +57,7 @@ OBJS +=  \
 analog.o \
 AVR_TTC_scheduler.o \
 config.o \
+light_sensor.o \
 main.o \
 sensor_protocol.o \
 serial.o \
@@ -65,6 +67,7 @@ OBJS_AS_ARGS +=  \
 analog.o \
 AVR_TTC_scheduler.o \
 config.o \
+light_sensor.o \
 main.o \
 sensor_protocol.o \
 serial.o \
@@ -74,6 +77,7 @@ C_DEPS +=  \
 analog.d \
 AVR_TTC_scheduler.d \
 config.d \
+light_sensor.d \
 main.d \
 sensor_protocol.d \
 serial.d \
@@ -83,6 +87,7 @@ C_DEPS_AS_ARGS +=  \
 analog.d \
 AVR_TTC_scheduler.d \
 config.d \
+light_sensor.d \
 main.d \
 sensor_protocol.d \
 serial.d \
@@ -117,6 +122,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./config.o: .././config.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./light_sensor.o: .././light_sensor.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
