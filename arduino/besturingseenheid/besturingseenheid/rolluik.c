@@ -3,7 +3,7 @@
 
 void init_rolluik_leds(void)
 {
-	uint8_t PORT_WRITE_ALL = 0b00001110;
+	uint8_t PORT_WRITE_ALL = 0b00011100;
 	
 	uint8_t temp = PORT_WRITE_ALL;
 	DDRD = temp;
@@ -11,12 +11,12 @@ void init_rolluik_leds(void)
 
 void rolluik_up(void)
 {
-	PORTD = 0b00000010;
+	PORTD = 0b00000100;
 }
 
 void rolluik_down(void)
 {
-	PORTD = 0b00001000;
+	PORTD = 0b00010000;
 }
 
 void rolluik_going(int time, int down) // down: 1 betekent dat hij omlaag gaat, 0 betekent dat hij omhoog gaat.

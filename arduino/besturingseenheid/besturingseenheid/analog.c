@@ -5,7 +5,7 @@
 void init_adc(void)
 {
     ADMUX = (1 << REFS0);
-    ADCSRA = (1 << ADEN) | 7; // enable analog-to-digital converter and set prescaler to 128
+    ADCSRA = (1 << ADEN) | 6; // enable analog-to-digital converter and set prescaler to 128
 }
 
 uint16_t read_analog_pin(uint8_t pin)

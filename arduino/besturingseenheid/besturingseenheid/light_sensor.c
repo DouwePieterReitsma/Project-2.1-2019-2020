@@ -37,7 +37,7 @@ void measure_light_intensity(void)
 		index = 0;
 	}
 	
-	lightintensities[index] = get_average_light_intensity();
+	lightintensities[index] = get_light_intensity();
 	
 	index++;
 }
