@@ -51,3 +51,17 @@ char receive(void)
     
     return UDR0;
 }
+
+void receive_string(char* buffer, size_t size)
+{
+	int i = 0;
+	char c;
+	
+	while(c != '\n' && i < size - 1)
+	{
+		c = receive();
+		buffer[i++] = c;
+	}
+	
+	buffer[i] = '\0';
+}

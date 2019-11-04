@@ -17,7 +17,8 @@ float get_temperature_in_celsius(void)
 {
     int reading = read_analog_pin(TEMPERATURE_ANALOG_PORT);
     
-    float voltage = reading * (5.0f / 1024.0f);
+    //float voltage = reading * (5.0f / 1024.0f);
+    float voltage = reading * 5.0f / 1024.0f;
     
     float temperature = (voltage - 0.5f) * 100;
     
