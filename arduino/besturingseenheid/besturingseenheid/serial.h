@@ -7,6 +7,6 @@ void init_serial_port(void);
 void transmit(char value);
 void transmit_message(const char* message);
 char receive(void);
-void receive_string(char* buffer, size_t size);
+void receive_string(char* buffer, size_t max_size);
 
 #endif /* SERIAL_COMMUNICATION_H_ */

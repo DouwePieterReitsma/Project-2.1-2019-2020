@@ -27,8 +27,10 @@ typedef enum {
 
 int serialize_sensor_data(SensorData* data, char* buffer);
 
-int parse_command(char* buffer, DeviceCommand* command, char* param);
-void process_command(DeviceCommand command, void* param);
+int parse_input(char* buffer, DeviceCommand* command, void* param);
+
+void process_command(DeviceCommand command);
+void process_command_with_param(DeviceCommand command, void* param);
 
 
 #endif /* SENSOR_DATA_H_ */

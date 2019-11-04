@@ -52,12 +52,12 @@ char receive(void)
     return UDR0;
 }
 
-void receive_string(char* buffer, size_t size)
+void receive_string(char* buffer, size_t max_size)
 {
 	int i = 0;
 	char c;
 	
-	while(c != '\n' && i < size - 1)
+	while(c != '\n' && i < max_size - 1)
 	{
 		c = receive();
 		buffer[i++] = c;
