@@ -28,12 +28,12 @@ int main(void)
 	
 	SCH_Init_T1();
 	
-	SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
-	SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
-	SCH_Add_Task(&test, 6000, 6000); // transmit sensor data temperature every 60 seconds
+	//SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
+	//SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
+	//SCH_Add_Task(&test, 6000, 6000); // transmit sensor data temperature every 60 seconds
 	
-	//SCH_Add_Task(&serial_receiver, 0, 1);
-	//SCH_Add_Task(&test2, 0, 500);
+	SCH_Add_Task(&serial_receiver, 0, 1);
+	SCH_Add_Task(&test2, 0, 500);
 	
 	//device_config.temperature_threshold = 15.0f;
 	
@@ -65,7 +65,7 @@ void test(void)
 void test2(void)
 {
 	char buffer[100];
-	sprintf(buffer, "Output: %f\r\n", device_config.temperature_threshold);
+	sprintf(buffer, "Device Name: %s\r\nTemperature Threshold: %f\r\n", device_config.device_name, device_config.temperature_threshold);
 	
 	transmit_message(buffer);
 }
@@ -74,12 +74,14 @@ void serial_receiver(void)
 {	
 	#define BUFFER_SIZE 100
 	char buffer[BUFFER_SIZE];
-	int command = -1;
-	float param;
+	//int command = -1;
+	//float param;
 	
 	receive_string(buffer, BUFFER_SIZE);
 	
-	sscanf(buffer, "%d:%f", &command, &param);
+	parse_input(buffer);
 	
-	process_command_with_param(command, &param);
+	//sscanf(buffer, "%d:%f", &command, &param);
+	
+	//process_command(command, &param);
 }

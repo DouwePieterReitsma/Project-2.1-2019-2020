@@ -1,6 +1,7 @@
 #include "sensor_protocol.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "serial.h"
@@ -18,26 +19,54 @@ int serialize_sensor_data(SensorData* data, char* buffer)
 	return 1;
 }
 
-int parse_input(char* input, DeviceCommand* command, void* param)
+int parse_input(char* input)
 {
-	//int command = -1;
-	char buffer[100];
+	int command = -1;
+	char param[100];
 	
 	if (input == NULL) return 0;
 	
-	sscanf(input, "%d:%99c", (int*)command, buffer);
+	sscanf(input, "%d:%s", &command, param);
 	
+	process_command(command, param);
 	
-	
-	
-	
-	return 0;
+	return 1;
 }
 
-void process_command(DeviceCommand command)
+void process_command(DeviceCommand command, char* param)
 {
 	switch(command)
 	{
+		case SET_TEMPERATURE_THRESHOLD:
+		{
+			device_config.temperature_threshold = atof(param);
+			break;
+		}
+		
+		case SET_LIGHT_THRESHOLD:
+		{
+			device_config.light_intensity_threshold = atof(param);
+			break;
+		}
+		
+		case SET_MAX_UNROLL_LENGTH:
+		{
+			device_config.max_unroll_distance = atoi(param);
+			break;
+		}
+		
+		case SET_MIN_UNROLL_LENGTH:
+		{
+			device_config.min_unroll_distance = atoi(param);
+			break;
+		}
+		
+		case SET_DEVICE_NAME:
+		{
+			strcpy(device_config.device_name, param);
+			break;
+		}
+		
 		case GET_TEMPERATURE_THRESHOLD:
 		break;
 		
@@ -61,45 +90,6 @@ void process_command(DeviceCommand command)
 		
 		case ROLL_SUNSHADES_DOWN:
 		break;
-		
-		default:
-		return;
-	}
-}
-
-void process_command_with_param(DeviceCommand command, void* param)
-{
-	switch(command)
-	{
-		case SET_TEMPERATURE_THRESHOLD:
-		{
-			device_config.temperature_threshold = *(float*)param;
-			break;
-		}
-		
-		case SET_LIGHT_THRESHOLD:
-		{
-			device_config.light_intensity_threshold = *(float*)param;
-			break;
-		}
-		
-		case SET_MAX_UNROLL_LENGTH:
-		{
-			device_config.max_unroll_distance = *(int*)param;
-			break;
-		}
-		
-		case SET_MIN_UNROLL_LENGTH:
-		{
-			device_config.min_unroll_distance = *(int*)param;
-			break;
-		}
-		
-		case SET_DEVICE_NAME:
-		{
-			strcpy(device_config.device_name, (char*)param);
-			break;
-		}
 		
 		default:
 		return;

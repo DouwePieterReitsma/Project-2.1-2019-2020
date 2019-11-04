@@ -25,12 +25,14 @@ typedef enum {
 	ROLL_SUNSHADES_DOWN = 12
 } DeviceCommand;
 
+
+// input functions
+int parse_input(char* buffer);
+void process_command(DeviceCommand command, char* param);
+
+
+// output functions
 int serialize_sensor_data(SensorData* data, char* buffer);
-
-int parse_input(char* buffer, DeviceCommand* command, void* param);
-
-void process_command(DeviceCommand command);
-void process_command_with_param(DeviceCommand command, void* param);
 
 
 #endif /* SENSOR_DATA_H_ */
