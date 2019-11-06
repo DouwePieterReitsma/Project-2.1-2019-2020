@@ -1,15 +1,154 @@
 #include "sensor_protocol.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "serial.h"
+#include "config.h"
+#include "temperature_sensor.h"
 
 int serialize_sensor_data(SensorData* data, char* buffer)
 {
-    if (data == NULL || buffer == NULL)
-    {
-        return 0;
-    }
+	if (data == NULL || buffer == NULL)
+	{
+		return 0;
+	}
 	
-	sprintf(buffer, "1:%d:%f:%f\n", data->light_intensity, data->temperature, data->distance);
+	sprintf(buffer, "1:%d:%f:%f\r\n", data->light_intensity, data->temperature, data->distance);
 	
-    return 1;
+	return 1;
+}
+
+int parse_input(char* input)
+{
+	int command = -1;
+	char param[100];
+	
+	if (input == NULL) return 0;
+	
+	sscanf(input, "%d:%s", &command, param);
+	
+	process_command(command, param);
+	
+	return 1;
+}
+
+void process_command(DeviceCommand command, char* param)
+{
+	char buffer[100];
+	
+	switch(command)
+	{
+		case SET_TEMPERATURE_THRESHOLD:
+		{
+			device_config.temperature_threshold = atof(param);
+			break;
+		}
+		
+		case SET_LIGHT_THRESHOLD:
+		{
+			device_config.light_intensity_threshold = atof(param);
+			break;
+		}
+		
+		case SET_MAX_UNROLL_LENGTH:
+		{
+			device_config.max_unroll_distance = atoi(param);
+			break;
+		}
+		
+		case SET_MIN_UNROLL_LENGTH:
+		{
+			device_config.min_unroll_distance = atoi(param);
+			break;
+		}
+		
+		case SET_DEVICE_NAME:
+		{
+			strcpy(device_config.device_name, param);
+			break;
+		}
+		
+		case GET_TEMPERATURE_THRESHOLD:
+		{
+			sprintf(buffer, "0:%f\r\n", device_config.temperature_threshold);
+			
+			serial_transmit_message(buffer);
+			
+			break;
+		}
+		
+		case GET_LIGHT_THRESHOLD:
+		{
+			sprintf(buffer, "0:%f\r\n", device_config.light_intensity_threshold);
+			
+			serial_transmit_message(buffer);
+			
+			break;
+		}
+		
+		case GET_MAX_UNROLL_LENGTH:
+		{
+			sprintf(buffer, "0:%d\r\n", device_config.max_unroll_distance);	
+			
+			serial_transmit_message(buffer);
+			
+			break;			
+		}
+		
+		
+		case GET_MIN_UNROLL_LENGTH:
+		{
+			sprintf(buffer, "0:%d\r\n", device_config.min_unroll_distance);
+			
+			serial_transmit_message(buffer);
+			
+			break;
+		}
+		
+		case GET_DEVICE_NAME:
+		{
+			sprintf(buffer, "0:%s\r\n", device_config.device_name);
+			
+			serial_transmit_message(buffer);
+			
+			break;
+		}
+		
+		case TOGGLE_AUTOMATIC_MODE:
+		{
+			break;
+		}
+		
+		case ROLL_SUNSHADES_UP:
+		{
+			break;
+		}
+		
+		case ROLL_SUNSHADES_DOWN:
+		{
+			break;
+		}
+		
+		default:
+		return;
+	}
+	
+	save_config();
+}
+
+void send_sensor_data(void)
+{
+	SensorData data;
+	
+	data.temperature = get_average_temperature_in_celsius();
+	data.light_intensity = 0;
+	data.distance = 0;
+	
+	char buffer[100];
+	
+	serialize_sensor_data(&data, buffer);
+	
+	serial_transmit_message(buffer);
 }
