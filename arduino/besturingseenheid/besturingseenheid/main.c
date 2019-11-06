@@ -33,7 +33,7 @@ int main(void)
 	
 	SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
 	SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
-	SCH_Add_Task(&send_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
+	SCH_Add_Task(&transmit_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
 	
 	SCH_Add_Task(&serial_check_for_input, 0, 1); // get characters
 	SCH_Add_Task(&parse_python_input, 0, 1); // parse python input

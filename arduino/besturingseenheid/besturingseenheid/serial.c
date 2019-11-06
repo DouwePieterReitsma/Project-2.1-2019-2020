@@ -24,6 +24,20 @@ int is_string_ready = 0;
 
 void init_serial_port(void)
 {
+<<<<<<< HEAD
+    //set baud rate 19200
+    UBRR0H = 0;
+    UBRR0L = UBRRVAL;
+    
+    //disable U2X mode
+    UCSR0A = 0;
+    
+    //enable transmitter
+    UCSR0B = _BV(TXEN0) | _BV(RXEN0);
+    
+    //set frame format : asynchronous, 8 data bits, 1 stop bit, no parity
+    UCSR0C = _BV(UCSZ01)|_BV(UCSZ00);
+=======
 	//set baud rate 19200
 	UBRR0H = 0;
 	UBRR0L = UBRRVAL;
@@ -49,6 +63,7 @@ void serial_transmit_message(const char* message)
 {
 	for(; *message != '\0'; message++)
 	serial_transmit(*message);
+>>>>>>> master
 }
 
 void serial_check_for_input(void)
@@ -83,6 +98,11 @@ int serial_string_ready(void)
 
 void serial_get_string(char* buffer)
 {
+<<<<<<< HEAD
+    loop_until_bit_is_set(UCSR0A, RXC0);
+    
+	return UDR0;
+=======
 	if (!serial_string_ready()) return; // string not ready
 	
 	memcpy(buffer, serial_input_buffer, sizeof(serial_input_buffer)); // copy input buffer
@@ -90,4 +110,5 @@ void serial_get_string(char* buffer)
 	memset(serial_input_buffer, 0, SERIAL_INPUT_BUFFER_SIZE); // clear input buffer
 	
 	is_string_ready = 0;
+>>>>>>> master
 }

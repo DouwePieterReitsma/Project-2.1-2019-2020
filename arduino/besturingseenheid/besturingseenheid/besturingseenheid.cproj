@@ -140,7 +140,19 @@
     <Compile Include="config.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="light_sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="light_sensor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rolluik.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rolluik.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="sensor_protocol.c">
@@ -159,6 +171,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="temperature_sensor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ultrasonic_sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ultrasonic_sensor.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
