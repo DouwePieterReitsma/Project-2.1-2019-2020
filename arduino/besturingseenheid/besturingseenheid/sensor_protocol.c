@@ -1,5 +1,7 @@
 #include "sensor_protocol.h"
 
+#include <avr/io.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -118,6 +120,10 @@ void process_command(DeviceCommand command, char* param)
 		
 		case TOGGLE_AUTOMATIC_MODE:
 		{
+			PORTD ^= (1 << PD2); // test
+			
+			device_config.automatic_mode = !device_config.automatic_mode;
+			
 			break;
 		}
 		
@@ -138,7 +144,7 @@ void process_command(DeviceCommand command, char* param)
 	save_config();
 }
 
-void send_sensor_data(void)
+void transmit_sensor_data(void)
 {
 	SensorData data;
 	
