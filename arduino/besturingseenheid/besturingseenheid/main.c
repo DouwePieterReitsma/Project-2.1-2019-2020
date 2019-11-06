@@ -13,6 +13,7 @@
 #include <string.h>
 
 #include "temperature_sensor.h"
+#include "light_sensor.h"
 #include "sensor_protocol.h"
 #include "AVR_TTC_scheduler.h"
 #include "serial.h"
@@ -33,6 +34,10 @@ int main(void)
 	
 	SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
 	SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
+	
+	SCH_Add_Task(&measure_light_intensity, 0, 100); // measure light intensity every second
+	SCH_Add_Task(&calculate_average_light_intensity, 3000, 3000); // measure light intensity every second
+	
 	SCH_Add_Task(&transmit_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
 	
 	SCH_Add_Task(&serial_check_for_input, 0, 1); // get characters

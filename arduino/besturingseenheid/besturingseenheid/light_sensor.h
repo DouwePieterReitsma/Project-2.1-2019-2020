@@ -1,7 +1,7 @@
 #ifndef LIGHT_SENSOR_H_
 #define LIGHT_SENSOR_H_
 
-#define LIGHT_ANALOG_PORT 0
+#define LIGHT_ANALOG_PORT 3
 
 
 void init_light_sensor(void);
