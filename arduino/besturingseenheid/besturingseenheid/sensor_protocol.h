@@ -30,9 +30,11 @@ typedef enum {
 int parse_input(char* buffer);
 void process_command(DeviceCommand command, char* param);
 
-
 // output functions
 int serialize_sensor_data(SensorData* data, char* buffer);
+
+// callback functions for AVR_TTC_scheduler
+void send_sensor_data(void);
 
 
 #endif /* SENSOR_DATA_H_ */

@@ -10,7 +10,8 @@ Config device_config = {
 	.max_unroll_distance = DEFAULT_MAX_UNROLL_DISTANCE,
 	.min_unroll_distance = DEFAULT_MIN_UNROLL_DISTANCE,
 	.temperature_threshold = DEFAULT_TEMPERATURE_THRESHOLD,
-	.light_intensity_threshold = DEFAULT_LIGHT_INTENSITY_THRESHOLD
+	.light_intensity_threshold = DEFAULT_LIGHT_INTENSITY_THRESHOLD,
+	.automatic_mode = DEFAULT_AUTOMATIC_MODE_VALUE
 };
 
 void save_config(void)
@@ -34,6 +35,7 @@ void factory_reset(void)
 	device_config.min_unroll_distance = DEFAULT_MIN_UNROLL_DISTANCE;
 	device_config.temperature_threshold = DEFAULT_TEMPERATURE_THRESHOLD;
 	device_config.light_intensity_threshold = DEFAULT_LIGHT_INTENSITY_THRESHOLD;
+	device_config.automatic_mode = DEFAULT_AUTOMATIC_MODE_VALUE;
 	
 	eeprom_busy_wait();
 	

@@ -4,7 +4,10 @@
  * Created: 30-10-2019 14:46:02
  */ 
 
+#define F_CPU 16000000UL
+
 #include <avr/io.h>
+#include <util/delay.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,9 +18,7 @@
 #include "serial.h"
 #include "config.h"
 
-void test(void);
-void test2(void);
-void serial_receiver(void);
+void parse_python_input(void);
 
 int main(void)
 {
@@ -26,62 +27,33 @@ int main(void)
 	
 	load_config();
 	
+	DDRD |= (1 << PD2);
+	
 	SCH_Init_T1();
 	
-	//SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
-	//SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
-	//SCH_Add_Task(&test, 6000, 6000); // transmit sensor data temperature every 60 seconds
+	SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
+	SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
+	SCH_Add_Task(&send_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
 	
-	SCH_Add_Task(&serial_receiver, 0, 1);
-	SCH_Add_Task(&test2, 0, 500);
-	
-	//device_config.temperature_threshold = 15.0f;
-	
-	//save_config();
-	
+	SCH_Add_Task(&serial_check_for_input, 0, 1); // get characters
+	SCH_Add_Task(&parse_python_input, 0, 1); // parse python input
+		
 	SCH_Start();
 	
 	while(1)
-	{
+	{	
 		SCH_Dispatch_Tasks();
 	}
 }
 
-void test(void)
-{
-	SensorData data;
-	
-	data.temperature = get_average_temperature_in_celsius();
-	data.light_intensity = 0;
-	data.distance = 0;
-	
-	char buffer[100];
-	
-	serialize_sensor_data(&data, buffer);
-	
-	transmit_message(buffer);
-}
-
-void test2(void)
-{
-	char buffer[100];
-	sprintf(buffer, "Device Name: %s\r\nTemperature Threshold: %f\r\n", device_config.device_name, device_config.temperature_threshold);
-	
-	transmit_message(buffer);
-}
-
-void serial_receiver(void)
+void parse_python_input(void)
 {	
-	#define BUFFER_SIZE 100
-	char buffer[BUFFER_SIZE];
-	//int command = -1;
-	//float param;
+	char buffer[SERIAL_INPUT_BUFFER_SIZE];
 	
-	receive_string(buffer, BUFFER_SIZE);
-	
-	parse_input(buffer);
-	
-	//sscanf(buffer, "%d:%f", &command, &param);
-	
-	//process_command(command, &param);
+	if (serial_string_ready()) 
+	{
+		serial_get_string(buffer);
+		
+		parse_input(buffer);
+	}
 }

@@ -6,6 +6,7 @@
 
 #include "serial.h"
 #include "config.h"
+#include "temperature_sensor.h"
 
 int serialize_sensor_data(SensorData* data, char* buffer)
 {
@@ -14,7 +15,7 @@ int serialize_sensor_data(SensorData* data, char* buffer)
 		return 0;
 	}
 	
-	sprintf(buffer, "1:%d:%f:%f\n", data->light_intensity, data->temperature, data->distance);
+	sprintf(buffer, "1:%d:%f:%f\r\n", data->light_intensity, data->temperature, data->distance);
 	
 	return 1;
 }
@@ -35,6 +36,8 @@ int parse_input(char* input)
 
 void process_command(DeviceCommand command, char* param)
 {
+	char buffer[100];
+	
 	switch(command)
 	{
 		case SET_TEMPERATURE_THRESHOLD:
@@ -68,28 +71,65 @@ void process_command(DeviceCommand command, char* param)
 		}
 		
 		case GET_TEMPERATURE_THRESHOLD:
-		break;
+		{
+			sprintf(buffer, "0:%f\r\n", device_config.temperature_threshold);
+			
+			serial_transmit_message(buffer);
+			
+			break;
+		}
 		
 		case GET_LIGHT_THRESHOLD:
-		break;
+		{
+			sprintf(buffer, "0:%f\r\n", device_config.light_intensity_threshold);
+			
+			serial_transmit_message(buffer);
+			
+			break;
+		}
 		
 		case GET_MAX_UNROLL_LENGTH:
-		break;
+		{
+			sprintf(buffer, "0:%d\r\n", device_config.max_unroll_distance);	
+			
+			serial_transmit_message(buffer);
+			
+			break;			
+		}
+		
 		
 		case GET_MIN_UNROLL_LENGTH:
-		break;
+		{
+			sprintf(buffer, "0:%d\r\n", device_config.min_unroll_distance);
+			
+			serial_transmit_message(buffer);
+			
+			break;
+		}
 		
 		case GET_DEVICE_NAME:
-		break;
+		{
+			sprintf(buffer, "0:%s\r\n", device_config.device_name);
+			
+			serial_transmit_message(buffer);
+			
+			break;
+		}
 		
 		case TOGGLE_AUTOMATIC_MODE:
-		break;
+		{
+			break;
+		}
 		
 		case ROLL_SUNSHADES_UP:
-		break;
+		{
+			break;
+		}
 		
 		case ROLL_SUNSHADES_DOWN:
-		break;
+		{
+			break;
+		}
 		
 		default:
 		return;
@@ -98,3 +138,17 @@ void process_command(DeviceCommand command, char* param)
 	save_config();
 }
 
+void send_sensor_data(void)
+{
+	SensorData data;
+	
+	data.temperature = get_average_temperature_in_celsius();
+	data.light_intensity = 0;
+	data.distance = 0;
+	
+	char buffer[100];
+	
+	serialize_sensor_data(&data, buffer);
+	
+	serial_transmit_message(buffer);
+}

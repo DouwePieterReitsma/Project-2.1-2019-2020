@@ -10,6 +10,8 @@ typedef struct
 	
 	float temperature_threshold;
 	float light_intensity_threshold;
+	
+	int automatic_mode;
 } Config;
 
 #define DEFAULT_DEVICE_NAME "Besturingseenheid"
@@ -17,6 +19,7 @@ typedef struct
 #define DEFAULT_MIN_UNROLL_DISTANCE 10
 #define DEFAULT_TEMPERATURE_THRESHOLD 22.0f
 #define DEFAULT_LIGHT_INTENSITY_THRESHOLD 3
+#define DEFAULT_AUTOMATIC_MODE_VALUE 1
 
 
 extern Config device_config;
