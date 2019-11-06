@@ -26,7 +26,7 @@ void init_serial_port(void)
     UCSR0A = 0;
     
     //enable transmitter
-    UCSR0B = _BV(RXEN0) | _BV(TXEN0);
+    UCSR0B = _BV(TXEN0) | _BV(RXEN0);
     
     //set frame format : asynchronous, 8 data bits, 1 stop bit, no parity
     UCSR0C = _BV(UCSZ01)|_BV(UCSZ00);
@@ -49,5 +49,5 @@ char receive(void)
 {
     loop_until_bit_is_set(UCSR0A, RXC0);
     
-    return UDR0;
+	return UDR0;
 }

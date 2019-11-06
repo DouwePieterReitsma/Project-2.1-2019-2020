@@ -3,6 +3,7 @@
 
 #define LIGHT_ANALOG_PORT 0
 
+
 void init_light_sensor(void);
 float get_light_intensity(void);
 float get_average_light_intensity(void);

@@ -8,6 +8,7 @@
 void init_rolluik_leds(void);
 void rolluik_up(void);
 void rolluik_down(void);
-void rolluik_going(int time, int down); //down: 1 betekent dat hij omlaag gaat, 0 betekent dat hij omhoog gaat.
+void rolluik_going_down(int timer);
+void rolluik_going_up(int timer);
 
 #endif /* ROLLUIK_H_ */

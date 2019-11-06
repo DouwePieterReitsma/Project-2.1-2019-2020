@@ -1,5 +1,9 @@
-#include <avr/delay.h>
 #include <avr/io.h>
+#include <avr/sfr_defs.h>
+#include <stdlib.h>
+
+#define F_CPU 16E6
+#include <util/delay.h>
 
 void init_rolluik_leds(void)
 {
@@ -19,30 +23,24 @@ void rolluik_down(void)
 	PORTD = 0b00010000;
 }
 
-void rolluik_going(int time, int down) // down: 1 betekent dat hij omlaag gaat, 0 betekent dat hij omhoog gaat.
+void rolluik_going_down(int timer)
 {
-	/*
-	if(down == 1)
+	for(int i = 0; i < timer; i++)
 	{
-		for(int i = 0; i < time; i++)
-		{
-			PORTD = 0b00000100;
-			_delay_ms(500);
-			PORTD = 0b00001000;
-			_delay_ms(500);
-		}
-		rolluik_down();
+		PORTD = 0b00011000;
+		_delay_ms(500);
+		PORTD = 0b00000000;
+		_delay_ms(500);
 	}
-	else if(down == 0)
+}
+
+void rolluik_going_up(int timer)
+{
+	for(int i = 0; i < 15; i++)
 	{
-		for(int i = 0; i < time; i++)
-		{
-			PORTD = 0b00000100;
-			_delay_ms(500);
-			PORTD = 0b00000010;
-			_delay_ms(500);
-		}
-		rolluik_up();
+		PORTD = 0b00001100;
+		_delay_ms(500);
+		PORTD = 0b00000000;
+		_delay_ms(500);
 	}
-	*/
 }
