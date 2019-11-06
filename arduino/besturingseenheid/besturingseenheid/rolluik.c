@@ -5,6 +5,8 @@
 #define F_CPU 16E6
 #include <util/delay.h>
 
+#include "serial.h"
+
 void init_rolluik_leds(void)
 {
 	uint8_t PORT_WRITE_ALL = 0b00011100;

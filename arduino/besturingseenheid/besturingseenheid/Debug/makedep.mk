@@ -20,3 +20,5 @@ serial.c
 
 temperature_sensor.c
 
+ultrasonic_sensor.c
+

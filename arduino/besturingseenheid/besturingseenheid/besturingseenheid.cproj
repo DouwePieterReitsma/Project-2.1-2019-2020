@@ -186,6 +186,12 @@
     <Compile Include="temperature_sensor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="ultrasonic_sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ultrasonic_sensor.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

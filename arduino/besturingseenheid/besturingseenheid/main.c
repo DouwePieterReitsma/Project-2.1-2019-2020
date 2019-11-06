@@ -20,10 +20,12 @@
 #include "serial.h"
 //#include "config.h"
 #include "rolluik.h"
+#include "ultrasonic_sensor.h"
 
 void test();
 void test2();
 void test3();
+void test4();
 //void test(void);
 //void test2(void);
 //void serial_receiver(void);
@@ -38,6 +40,9 @@ int main(void)
 	_delay_ms(1000);
 	init_rolluik_leds();
 	_delay_ms(1000);
+	init_ultrasonic_sensor();
+	_delay_ms(1000);	
+	
 	DDRD = 0xff;
 	
 	//SCH_Init_T1();
@@ -59,9 +64,14 @@ int main(void)
 	
 	while(1)
 	{
-		test();	// test de temperatuur
-		test2(); // test de licht intensiteit
-		test3(); // test de LEDs
+		//test(); // test de temperatuur
+		//_delay_ms(500);
+		//test2(); // test de licht intensiteit
+		//_delay_ms(500);
+		//test3(); // test de LEDs
+		//_delay_ms(500);
+		test4(); // test de ultrasonic sensor
+		_delay_ms(500);
 	}
 }
 
@@ -103,6 +113,13 @@ void test3() // test de LEDs
 {
 	rolluik_going_down(15);
 	rolluik_going_up(15);
+}
+
+void test4()
+{
+	measure_distance();
+	_delay_ms(1000);
+	transmit(get_distance());
 }
 /*
 void test(void)
