@@ -38,7 +38,7 @@ void rolluik_going_down(int timer)
 
 void rolluik_going_up(int timer)
 {
-	for(int i = 0; i < 15; i++)
+	for(int i = 0; i < timer; i++)
 	{
 		PORTD = 0b00001100;
 		_delay_ms(500);

@@ -22,7 +22,8 @@ typedef enum {
 	GET_DEVICE_NAME = 9,
 	TOGGLE_AUTOMATIC_MODE = 10,
 	ROLL_SUNSHADES_UP = 11,
-	ROLL_SUNSHADES_DOWN = 12
+	ROLL_SUNSHADES_DOWN = 12,
+	FACTORY_RESET = 13
 } DeviceCommand;
 
 
@@ -32,6 +33,7 @@ void process_command(DeviceCommand command, char* param);
 
 // output functions
 int serialize_sensor_data(SensorData* data, char* buffer);
+void error_message(const char* message);
 
 // callback functions for AVR_TTC_scheduler
 void transmit_sensor_data(void);

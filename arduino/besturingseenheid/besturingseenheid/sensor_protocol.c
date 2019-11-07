@@ -10,6 +10,7 @@
 #include "config.h"
 #include "temperature_sensor.h"
 #include "light_sensor.h"
+#include "rolluik.h"
 
 int serialize_sensor_data(SensorData* data, char* buffer)
 {
@@ -46,30 +47,40 @@ void process_command(DeviceCommand command, char* param)
 		case SET_TEMPERATURE_THRESHOLD:
 		{
 			device_config.temperature_threshold = atof(param);
+			
+			save_config();
 			break;
 		}
 		
 		case SET_LIGHT_THRESHOLD:
 		{
 			device_config.light_intensity_threshold = atof(param);
+			
+			save_config();
 			break;
 		}
 		
 		case SET_MAX_UNROLL_LENGTH:
 		{
 			device_config.max_unroll_distance = atoi(param);
+			
+			save_config();
 			break;
 		}
 		
 		case SET_MIN_UNROLL_LENGTH:
 		{
 			device_config.min_unroll_distance = atoi(param);
+			
+			save_config();
 			break;
 		}
 		
 		case SET_DEVICE_NAME:
 		{
 			strcpy(device_config.device_name, param);
+			
+			save_config();
 			break;
 		}
 		
@@ -130,19 +141,53 @@ void process_command(DeviceCommand command, char* param)
 		
 		case ROLL_SUNSHADES_UP:
 		{
+			if (device_config.automatic_mode == 0)
+			{
+				rolluik_going_up(10);
+				rolluik_up();
+			}
+			else
+			{
+				error_message("Manual mode not enabled.");
+			}
+			
 			break;
 		}
 		
 		case ROLL_SUNSHADES_DOWN:
 		{
+			if (device_config.automatic_mode == 0)
+			{
+				rolluik_going_down(10);
+				rolluik_down();
+			}
+			else
+			{
+				error_message("Manual mode not enabled.");
+			}
+			
+			break;
+		}
+		
+		case FACTORY_RESET:
+		{
+			factory_reset();
+			
 			break;
 		}
 		
 		default:
 		return;
 	}
+}
+
+void error_message(const char* message)
+{
+	char buffer[100];
 	
-	save_config();
+	sprintf(buffer, "3:%s\r\n", message);
+	
+	serial_transmit_message(buffer);
 }
 
 void transmit_sensor_data(void)

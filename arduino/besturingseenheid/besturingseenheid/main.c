@@ -18,6 +18,7 @@
 #include "AVR_TTC_scheduler.h"
 #include "serial.h"
 #include "config.h"
+#include "rolluik.h"
 
 void parse_python_input(void);
 
@@ -25,10 +26,11 @@ int main(void)
 {
 	init_serial_port();
 	init_temperature_sensor();
+	init_rolluik_leds();
 	
 	load_config();
 	
-	DDRD |= (1 << PD2);
+	//DDRD |= (1 << PD2);
 	
 	SCH_Init_T1();
 	
