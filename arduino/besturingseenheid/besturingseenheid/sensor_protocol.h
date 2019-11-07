@@ -26,7 +26,6 @@ typedef enum {
 	FACTORY_RESET = 13
 } DeviceCommand;
 
-
 // input functions
 int parse_input(char* buffer);
 void process_command(DeviceCommand command, char* param);

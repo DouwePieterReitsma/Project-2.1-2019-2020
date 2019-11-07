@@ -41,20 +41,21 @@ int main(void)
 	SCH_Add_Task(&calculate_average_light_intensity, 3000, 3000); // measure light intensity every second
 	
 	SCH_Add_Task(&transmit_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
-	
-	SCH_Add_Task(&serial_check_for_input, 0, 1); // get characters
-	SCH_Add_Task(&parse_python_input, 0, 1); // parse python input
 		
 	SCH_Start();
 	
 	while(1)
 	{	
 		SCH_Dispatch_Tasks();
+		
+		parse_python_input();
 	}
 }
 
 void parse_python_input(void)
 {	
+	serial_check_for_input();
+	
 	char buffer[SERIAL_INPUT_BUFFER_SIZE];
 	
 	if (serial_string_ready()) 
