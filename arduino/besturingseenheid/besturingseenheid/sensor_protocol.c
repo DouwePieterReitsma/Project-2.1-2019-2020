@@ -7,6 +7,9 @@
 #include "serial.h"
 #include "config.h"
 #include "temperature_sensor.h"
+#include "light_sensor.h"
+#include "rolluik.h"
+#include "ultrasonic_sensor.h"
 
 int serialize_sensor_data(SensorData* data, char* buffer)
 {
@@ -142,9 +145,9 @@ void send_sensor_data(void)
 {
 	SensorData data;
 	
-	data.temperature = get_average_temperature_in_celsius();
-	data.light_intensity = 0;
-	data.distance = 0;
+	data.temperature = 0; //get_average_temperature_in_celsius();
+	data.light_intensity = 0; //get_average_light_intensity();
+	data.distance = get_distance();
 	
 	char buffer[100];
 	

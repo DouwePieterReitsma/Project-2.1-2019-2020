@@ -1,6 +1,8 @@
 #ifndef SERIAL_H_
 #define SERIAL_H_
 
+#define SERIAL_INPUT_BUFFER_SIZE 100
+
 void init_serial_port(void);
 
 void serial_transmit(char value);

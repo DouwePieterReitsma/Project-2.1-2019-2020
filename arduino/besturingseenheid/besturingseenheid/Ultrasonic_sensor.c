@@ -15,7 +15,7 @@ int16_t COUNTA = 0; // storing digital output
 
 void init_ultrasonic_sensor()
 {
-	DDRD = 0b11111011;
+	DDRD = 0xff;
 	_delay_ms(50);
 	
 	EIMSK |= (1 << INT0); // enabling interrupt0
@@ -47,9 +47,9 @@ int16_t get_distance()
 
 void measure_distance()
 {
-	PORTD |= (1 << PIND0);
+	PORTD |= (1 << PIND2);
 	_delay_us(15);
-	PORTD &= ~(1 << PIND0);
+	PORTD &= ~(1 << PIND2);
 	
 	COUNTA = pulse / 58; // getting the distance based on formula
 	
