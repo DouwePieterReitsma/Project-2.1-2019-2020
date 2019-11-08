@@ -104,11 +104,11 @@ void process_command(DeviceCommand command, char* param)
 		
 		case GET_MAX_UNROLL_LENGTH:
 		{
-			sprintf(buffer, "0:%d\r\n", device_config.max_unroll_distance);	
+			sprintf(buffer, "0:%d\r\n", device_config.max_unroll_distance);
 			
 			serial_transmit_message(buffer);
 			
-			break;			
+			break;
 		}
 		
 		
@@ -132,8 +132,6 @@ void process_command(DeviceCommand command, char* param)
 		
 		case TOGGLE_AUTOMATIC_MODE:
 		{
-			PORTD ^= (1 << PD2); // test
-			
 			device_config.automatic_mode = !device_config.automatic_mode;
 			
 			break;
@@ -197,6 +195,19 @@ void transmit_sensor_data(void)
 	data.temperature = get_average_temperature_in_celsius();
 	data.light_intensity = get_average_light_intensity();
 	data.distance = 0;
+	
+	if (device_config.automatic_mode) {
+		if ((data.temperature >= device_config.temperature_threshold || data.light_intensity >= device_config.light_intensity_threshold) && !rolluik_is_rolled_down())
+		{
+			rolluik_going_down(10);
+			rolluik_down();
+		}
+		else if ((data.temperature < device_config.temperature_threshold || data.light_intensity < device_config.light_intensity_threshold) && rolluik_is_rolled_down())
+		{
+			rolluik_going_up(10);
+			rolluik_up();
+		}
+	}
 	
 	char buffer[100];
 	

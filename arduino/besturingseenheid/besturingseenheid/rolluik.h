@@ -11,4 +11,6 @@ void rolluik_down(void);
 void rolluik_going_down(int timer);
 void rolluik_going_up(int timer);
 
+int rolluik_is_rolled_down(void);
+
 #endif /* ROLLUIK_H_ */

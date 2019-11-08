@@ -7,6 +7,8 @@
 
 #include "serial.h"
 
+int is_rolled_down = 0;
+
 void init_rolluik_leds(void)
 {
 	uint8_t PORT_WRITE_ALL = 0b00011100;
@@ -18,11 +20,15 @@ void init_rolluik_leds(void)
 void rolluik_up(void)
 {
 	PORTD = 0b00000100;
+	
+	is_rolled_down = 0;
 }
 
 void rolluik_down(void)
 {
 	PORTD = 0b00010000;
+	
+	is_rolled_down = 1;
 }
 
 void rolluik_going_down(int timer)
@@ -45,4 +51,9 @@ void rolluik_going_up(int timer)
 		PORTD = 0b00000000;
 		_delay_ms(500);
 	}
+}
+
+int rolluik_is_rolled_down(void)
+{
+	return is_rolled_down;
 }

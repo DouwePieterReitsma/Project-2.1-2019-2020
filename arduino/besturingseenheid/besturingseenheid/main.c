@@ -31,8 +31,6 @@ int main(void)
 
 	load_config();
 	
-	//DDRD |= (1 << PD2);
-	
 	SCH_Init_T1();
 	
 	SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second

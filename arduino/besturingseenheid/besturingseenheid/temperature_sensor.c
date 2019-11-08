@@ -2,6 +2,8 @@
 #include "analog.h"
 #include "serial.h"
 #include "sensor_protocol.h"
+#include "config.h"
+#include "rolluik.h"
 
 #define NUM_TEMPERATURES 40
 
@@ -54,4 +56,20 @@ void calculate_average_temperature(void)
     }
     
     average_temperature /= NUM_TEMPERATURES;
+	
+	
+	//// automatic controls
+	//if (device_config.automatic_mode)
+	//{
+		//if (average_temperature >= device_config.temperature_threshold && !rolluik_is_rolled_down())
+		//{
+			//rolluik_going_down(10);
+			//rolluik_down();
+		//}
+		//else if(average_temperature < device_config.temperature_threshold && rolluik_is_rolled_down())
+		//{
+			//rolluik_going_up(10);
+			//rolluik_up();
+		//}
+	//}
 }
