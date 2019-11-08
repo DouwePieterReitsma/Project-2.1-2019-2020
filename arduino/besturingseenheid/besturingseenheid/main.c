@@ -12,13 +12,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "temperature_sensor.h"
-#include "light_sensor.h"
+//#include "temperature_sensor.h"
+//#include "light_sensor.h"
 #include "sensor_protocol.h"
-#include "AVR_TTC_scheduler.h"
+//#include "AVR_TTC_scheduler.h"
 #include "serial.h"
 #include "config.h"
-#include "rolluik.h"
+//#include "rolluik.h"
 #include "ultrasonic_sensor.h"
 
 void parse_python_input(void);
@@ -26,13 +26,14 @@ void parse_python_input(void);
 int main(void)
 {
 	init_serial_port();
-	init_temperature_sensor();
-	init_rolluik_leds();
+	//init_temperature_sensor();
+	//init_rolluik_leds();
+	init_ultrasonic_sensor();
 
 	load_config();
 	
 	//DDRD |= (1 << PD2);
-	
+	/*
 	SCH_Init_T1();
 	
 	SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
@@ -44,12 +45,19 @@ int main(void)
 	SCH_Add_Task(&transmit_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
 		
 	SCH_Start();
-	
+	*/
 	while(1)
-	{	
+	{
+		/*	
 		SCH_Dispatch_Tasks();
 		
 		parse_python_input();
+		*/
+		measure_distance();
+		_delay_ms(1000);
+		serial_transmit(get_distance());
+		//serial_transmit_message(get_distance());
+		//transmit_sensor_data();
 	}
 }
 
