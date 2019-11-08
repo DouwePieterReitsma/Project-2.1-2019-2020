@@ -19,6 +19,7 @@
 #include "serial.h"
 #include "config.h"
 #include "rolluik.h"
+#include "ultrasonic_sensor.h"
 
 void parse_python_input(void);
 
@@ -27,7 +28,7 @@ int main(void)
 	init_serial_port();
 	init_temperature_sensor();
 	init_rolluik_leds();
-	
+
 	load_config();
 	
 	//DDRD |= (1 << PD2);
