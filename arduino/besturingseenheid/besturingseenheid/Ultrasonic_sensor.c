@@ -58,6 +58,7 @@ uint16_t get_distance()
 	while(resultready == 0);
 	//return echo / 15;
 	echo /= 58;
+	echo /= 2;
 	return echo;
 }
 
