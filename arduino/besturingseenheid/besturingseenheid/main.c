@@ -46,6 +46,9 @@ int main(void)
 		
 	SCH_Start();
 	*/
+	
+	uint16_t value = 0;
+	
 	while(1)
 	{
 		/*	
@@ -53,9 +56,11 @@ int main(void)
 		
 		parse_python_input();
 		*/
-		measure_distance();
+		//measure_distance();
 		_delay_ms(1000);
-		serial_transmit(get_distance());
+		value = get_distance();
+		_delay_ms(1000);
+		serial_transmit(value);
 		//serial_transmit_message(get_distance());
 		//transmit_sensor_data();
 	}
