@@ -15,7 +15,7 @@
 //#include "temperature_sensor.h"
 //#include "light_sensor.h"
 #include "sensor_protocol.h"
-#include "AVR_TTC_scheduler.h"
+//#include "AVR_TTC_scheduler.h"
 #include "serial.h"
 #include "config.h"
 //#include "rolluik.h"
@@ -33,31 +33,36 @@ int main(void)
 	load_config();
 	
 	//DDRD |= (1 << PD2);
-	
+	/*
 	SCH_Init_T1();
 	
-	//SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
-	//SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
+	SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
+	SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
 	
-	//SCH_Add_Task(&measure_light_intensity, 0, 100); // measure light intensity every second
-	//SCH_Add_Task(&calculate_average_light_intensity, 3000, 3000); // measure light intensity every second
+	SCH_Add_Task(&measure_light_intensity, 0, 100); // measure light intensity every second
+	SCH_Add_Task(&calculate_average_light_intensity, 3000, 3000); // measure light intensity every second
 	
-	SCH_Add_Task(&measure_distance, 0, 100); // measure the distance every second
-	
-	SCH_Add_Task(&transmit_sensor_data, 600, 600); // transmit sensor data temperature every 60 seconds
+	SCH_Add_Task(&transmit_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
 		
 	SCH_Start();
+	*/
+	
+	uint16_t value = 0;
 	
 	while(1)
 	{
-		//measure_distance();
-		//_delay_us(100);
+		/*	
 		SCH_Dispatch_Tasks();
-				
-		parse_python_input();/*
-		measure_distance();
+		
+		parse_python_input();
+		*/
+		//measure_distance();
 		_delay_ms(1000);
-		transmit_sensor_data();*/
+		value = get_distance();
+		_delay_ms(1000);
+		serial_transmit(value);
+		//serial_transmit_message(get_distance());
+		//transmit_sensor_data();
 	}
 }
 
