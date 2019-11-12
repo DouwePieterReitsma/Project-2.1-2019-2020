@@ -28,26 +28,32 @@ int main(void)
 	init_serial_port();
 	init_temperature_sensor();
 	init_rolluik_leds();
+	init_ultrasonic_sensor();
+	init_light_sensor();
 
 	load_config();
+
+	rolluik_up();
+
 	
 	SCH_Init_T1();
 	
-	SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
-	SCH_Add_Task(&calculate_average_temperature, 4000, 4000); // calculate average temperature every 40 seconds
+ 	SCH_Add_Task(&measure_temperature, 0, 100); // measure temperature every second
+ 	SCH_Add_Task(&calculate_average_temperature, 400, 400); // calculate average temperature every 40 seconds
+ 	
+ 	SCH_Add_Task(&measure_light_intensity, 0, 100); // measure light intensity every second
+ 	SCH_Add_Task(&calculate_average_light_intensity, 300, 300); // measure light intensity every second
+
+	SCH_Add_Task(&measure_distance, 0, 100);
 	
-	SCH_Add_Task(&measure_light_intensity, 0, 100); // measure light intensity every second
-	SCH_Add_Task(&calculate_average_light_intensity, 3000, 3000); // measure light intensity every second
-	
-	SCH_Add_Task(&transmit_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
+	SCH_Add_Task(&transmit_sensor_data, 0, 1000); // test omdat 60 seconden te lang zijn
+//	SCH_Add_Task(&transmit_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
 		
 	SCH_Start();
 	
 	while(1)
-	{	
+	{
 		SCH_Dispatch_Tasks();
-		
-		parse_python_input();
 	}
 }
 
