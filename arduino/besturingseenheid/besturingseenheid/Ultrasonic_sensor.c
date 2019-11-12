@@ -1,57 +1,54 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdio.h>
 
-#define F_CPU 10E6
+#define F_CPU 16E6
 #include <util/delay.h>
 
 #include <stdlib.h>
+#include <string.h>
+#include "serial.h"
+#include "ultrasonic_sensor.h"
 
-// defines variables
 static volatile int pulse = 0;
 static volatile int i = 0;
-int16_t distance = 0;
-int16_t COUNTA = 0; // storing digital output
 
+int16_t count_a = 0;
 
 void init_ultrasonic_sensor()
 {
-	DDRD = 0xff;
-	_delay_ms(50);
-	
-	EIMSK |= (1 << INT0); // enabling interrupt0
-	EICRA |= (1 << ISC00); // setting interrupt triggering logic change
-	
-	sei();
+	DDRB = 0b00001000;
+	DDRD = 0b00000000;
+	EICRA = (1<<ISC00);
+	EIMSK = (1<<INT0);
 }
 
-ISR(INT0_vect) // interrupt service routine when there is a change in logic level
+uint16_t get_distance()
 {
-	if(i == 1) // when logic from HIGH to LOW
-	{
-		TCCR1B = 0; // disabling counter
-		pulse = TCNT1; // count memory is updated to integer
-		TCNT1 = 0; // resetting the counter memory
-		i = 0;
-	}
-	if(i == 0) // when logic change is from LOW to HIGH
-	{
-		TCCR1B |= (1 << CS10); // enabling counter
-		i = 1;
-	}
-}
-
-int16_t get_distance()
-{
-	return distance;
+	return count_a;
 }
 
 void measure_distance()
 {
-	PORTD |= (1 << PIND2);
-	_delay_us(15);
-	PORTD &= ~(1 << PIND2);
-	
-	COUNTA = pulse / 58; // getting the distance based on formula
-	
-	distance = COUNTA;
+	PORTB |= 1<<TRIGGER_PORT;
+	_delay_us(10);
+	PORTB &= ~(1<<TRIGGER_PORT);
+	count_a = pulse / 7;
+}
+
+ISR(INT0_vect)
+{
+	if(i == 1)
+	{
+		TCCR1B = 0;
+		pulse = TCNT1;
+		TCNT1 = 0;
+		i = 0;
+	}
+
+	if(i==0)
+	{
+		TCCR1B |= 1<<CS10;
+		i = 1;
+	}
 }

@@ -38,7 +38,16 @@ void init_serial_port(void)
     UCSR0C = _BV(UCSZ01)|_BV(UCSZ00);
 }
 
+/*
 void serial_transmit(char value)
+{
+	loop_until_bit_is_set(UCSR0A, UDRE0);
+	
+	UDR0 = value;
+}
+*/
+
+void serial_transmit(uint16_t value)
 {
 	loop_until_bit_is_set(UCSR0A, UDRE0);
 	

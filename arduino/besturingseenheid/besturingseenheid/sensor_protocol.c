@@ -11,6 +11,7 @@
 #include "temperature_sensor.h"
 #include "light_sensor.h"
 #include "rolluik.h"
+#include "ultrasonic_sensor.h"
 
 int serialize_sensor_data(SensorData* data, char* buffer)
 {
@@ -192,9 +193,9 @@ void transmit_sensor_data(void)
 {
 	SensorData data;
 	
-	data.temperature = get_average_temperature_in_celsius();
+	data.temperature = 0; //get_average_temperature_in_celsius();
 	data.light_intensity = get_average_light_intensity();
-	data.distance = 0;
+	data.distance = get_distance();
 	
 	if (device_config.automatic_mode) {
 		if ((data.temperature >= device_config.temperature_threshold || data.light_intensity >= device_config.light_intensity_threshold) && !rolluik_is_rolled_down())
