@@ -19,7 +19,7 @@ class update_ports():
             #     self.dict[str(p[0])] = serial.Serial(p[0], 19200)
             if p[0] not in self.ports_list:
                 self.ports_list.append(p[0])
-                self.dict[str(p[0])] =
+                self.dict[str(p[0])] = serial_protocol.SerialProtocol(p[0])
 
         for port in self.ports_list:
             bool = 1

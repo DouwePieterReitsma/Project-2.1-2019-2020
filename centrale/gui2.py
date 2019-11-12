@@ -4,6 +4,7 @@ import threading
 import update_ports
 import light
 import temp
+import serial_protocol
 
 
 class gui():
@@ -85,17 +86,38 @@ class gui():
         self.show_settingsbutton = Button(self.buttonsframe, text="settings", command=self.show_settings)
         self.hide_settingsbutton = Button(self.buttonsframe, text="hide settings", command=self.hide_settings)
 
-        ON = Button(self.buttonsframe, text="ON")
-        OFF = Button(self.buttonsframe, text="OFF")
+        ON = Button(self.buttonsframe, text="ON", command=self.onButtonCallback)
+        OFF = Button(self.buttonsframe, text="OFF", command=self.offButtonCallback)
+
+        min_uitrolstand = IntVar()
+        max_uitrolstand = IntVar()
+        device_name = StringVar()
+
+        unit = self.updater.return_dict()[self.current_unit]
+
+        unit.send_command(serial_protocol.SerialCommands.GET_MIN_UNROLL_LENGTH)
+
+        min_uitrolstand.set(unit.parse_serial(unit.receive())[1])
+
+        unit.send_command(serial_protocol.SerialCommands.GET_MAX_UNROLL_LENGTH)
+
+        max_uitrolstand.set(unit.parse_serial(unit.receive())[1])
+
+        unit.send_command(serial_protocol.SerialCommands.GET_DEVICE_NAME)
+
+        device_name.set(unit.parse_serial(unit.receive())[1])
+
+
 
         MinLabelTabOne = Label(self.framesies, text="Minimale oprol:")
         MaxLabelTabOne = Label(self.framesies, text="Maximale uitrol:")
         DeviceNameLabelTabOne = Label(self.framesies, text="Device name")
-        MinEntryTabOne = Entry(self.framesies)
-        MaxEntryTabOne = Entry(self.framesies)
-        DeviceNameEntryTabOne = Entry(self.framesies)
-        buttonForward = Button(self.framesies, text="Send")
-        buttonBack = Button(self.framesies, text="Send")
+        MinEntryTabOne = Entry(self.framesies, textvariable=min_uitrolstand)
+        MaxEntryTabOne = Entry(self.framesies, textvariable=max_uitrolstand)
+        DeviceNameEntryTabOne = Entry(self.framesies, textvariable=device_name)
+        sendButton1 = Button(self.framesies, text="Send", command= lambda: self.sendButton1Callback(min_uitrolstand.get()))
+        sendButton2 = Button(self.framesies, text="Send", command= lambda: self.sendButton2Callback(max_uitrolstand.get()))
+        sendButton3 = Button(self.framesies, text="Send", command= lambda: self.sendButton3Callback(device_name.get()))
 
         ON.pack(anchor=W)
         OFF.pack(anchor=W)
@@ -105,10 +127,11 @@ class gui():
         MinEntryTabOne.grid(row=3, column=1, padx=15, pady=15)
         MaxLabelTabOne.grid(row=4, column=0, padx=15, pady=15)
         MaxEntryTabOne.grid(row=4, column=1, padx=15, pady=15)
-        DeviceNameLabelTabOne.grid(row=6, column=0, padx=15, pady=15)
-        DeviceNameEntryTabOne.grid(row=6, column=1, padx=15, pady=15)
-        buttonForward.grid(row=4, column=3, padx=15, pady=15)
-        buttonBack.grid(row=6, column=3, padx=15, pady=15)
+        DeviceNameLabelTabOne.grid(row=5, column=0, padx=15, pady=15)
+        DeviceNameEntryTabOne.grid(row=5, column=1, padx=15, pady=15)
+        sendButton1.grid(row=3, column=3, padx=15, pady=15)
+        sendButton2.grid(row=4, column=3, padx=15, pady=15)
+        sendButton3.grid(row=5, column=3, padx=15, pady=15)
 
 
         self.setting_frame.pack(anchor=W, fill=Y, expand=False, side=LEFT)
@@ -163,11 +186,11 @@ class gui():
             for port in self.updater.return_ports_list():
                 i = 0
                 Radiobutton(self.frame1, text=str(port), variable=self.radio1, value=str(port)[3], command=self.selection1).pack(anchor=E,
-                                                                                                          padx=(0, 30))
+                                                                                                                                 padx=(0, 30))
                 Radiobutton(self.frame2, text=str(port), variable=self.radio2, value=str(port)[3], command=self.selection2).pack(anchor=E,
-                                                                                                          padx=(0, 30))
+                                                                                                                                 padx=(0, 30))
                 Radiobutton(self.frame3, text=str(port), variable=self.radio3, value=str(port)[3], command=self.selection3).pack(anchor=E,
-                                                                                                          padx=(0, 30))
+                                                                                                                                 padx=(0, 30))
                 self.updater.updatePorts()
                 i += 1
         else:
@@ -181,6 +204,64 @@ class gui():
         self.frame2.pack(anchor=NE)
         self.frame3.pack(anchor=E)
         self.frame.after(1000, self.radiobuttons)
+
+    def onButtonCallback(self):
+        if self.current_unit == '':
+            return
+
+        unit = self.updater.return_dict()[self.current_unit]
+
+        unit.send_command(serial_protocol.SerialCommands.ROLL_SUNSHADES_DOWN)
+
+        print(unit.receive())
+
+    def offButtonCallback(self):
+        if self.current_unit == '':
+            return
+
+        unit = self.updater.return_dict()[self.current_unit]
+
+        unit.send_command(serial_protocol.SerialCommands.ROLL_SUNSHADES_UP)
+
+        print(unit.receive())
+
+    def sendButton1Callback(self, value):
+        if self.current_unit == '':
+            return
+
+        unit = self.updater.return_dict()[self.current_unit]
+
+        unit.send_command(serial_protocol.SerialCommands.SET_MIN_UNROLL_LENGTH, value)
+
+        unit.send_command(serial_protocol.SerialCommands.GET_MIN_UNROLL_LENGTH)
+
+        print(unit.receive())
+
+    def sendButton2Callback(self, value):
+        if self.current_unit == '':
+            return
+
+        unit = self.updater.return_dict()[self.current_unit]
+
+        unit.send_command(serial_protocol.SerialCommands.SET_MAX_UNROLL_LENGTH, value)
+
+        unit.send_command(serial_protocol.SerialCommands.GET_MAX_UNROLL_LENGTH)
+
+        print(unit.receive())
+
+    def sendButton3Callback(self, value):
+        if self.current_unit == '':
+            return
+
+        unit = self.updater.return_dict()[self.current_unit]
+
+        unit.send_command(serial_protocol.SerialCommands.SET_DEVICE_NAME, value)
+
+        unit.send_command(serial_protocol.SerialCommands.GET_DEVICE_NAME)
+
+        print(unit.receive())
+
+        pass
 
 
 root = Tk()
