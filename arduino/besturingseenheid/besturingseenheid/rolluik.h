@@ -1,9 +1,9 @@
 #ifndef ROLLUIK_H_
 #define ROLLUIK_H_
 
-#define GREEN_LED_PORT 2
-#define YELLOW_LED_PORT 3
-#define RED_LED_PORT 4
+#define GREEN_LED_PORT 3
+#define YELLOW_LED_PORT 4
+#define RED_LED_PORT 5
 
 void init_rolluik_leds(void);
 void rolluik_up(void);
