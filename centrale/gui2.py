@@ -5,7 +5,7 @@ import update_ports
 import light
 import temp
 import serial_protocol
-
+import time
 
 class gui():
     def __init__(self, root):
@@ -97,13 +97,19 @@ class gui():
 
         unit.send_command(serial_protocol.SerialCommands.GET_MIN_UNROLL_LENGTH)
 
+        # time.sleep(1)
+
         min_uitrolstand.set(unit.parse_serial(unit.receive())[1])
 
         unit.send_command(serial_protocol.SerialCommands.GET_MAX_UNROLL_LENGTH)
 
+        # time.sleep(1)
+
         max_uitrolstand.set(unit.parse_serial(unit.receive())[1])
 
         unit.send_command(serial_protocol.SerialCommands.GET_DEVICE_NAME)
+
+        # time.sleep(1)
 
         device_name.set(unit.parse_serial(unit.receive())[1])
 
@@ -213,8 +219,6 @@ class gui():
 
         unit.send_command(serial_protocol.SerialCommands.ROLL_SUNSHADES_DOWN)
 
-        print(unit.receive())
-
     def offButtonCallback(self):
         if self.current_unit == '':
             return
@@ -222,8 +226,6 @@ class gui():
         unit = self.updater.return_dict()[self.current_unit]
 
         unit.send_command(serial_protocol.SerialCommands.ROLL_SUNSHADES_UP)
-
-        print(unit.receive())
 
     def sendButton1Callback(self, value):
         if self.current_unit == '':
@@ -233,10 +235,6 @@ class gui():
 
         unit.send_command(serial_protocol.SerialCommands.SET_MIN_UNROLL_LENGTH, value)
 
-        unit.send_command(serial_protocol.SerialCommands.GET_MIN_UNROLL_LENGTH)
-
-        print(unit.receive())
-
     def sendButton2Callback(self, value):
         if self.current_unit == '':
             return
@@ -244,10 +242,6 @@ class gui():
         unit = self.updater.return_dict()[self.current_unit]
 
         unit.send_command(serial_protocol.SerialCommands.SET_MAX_UNROLL_LENGTH, value)
-
-        unit.send_command(serial_protocol.SerialCommands.GET_MAX_UNROLL_LENGTH)
-
-        print(unit.receive())
 
     def sendButton3Callback(self, value):
         if self.current_unit == '':
@@ -257,11 +251,6 @@ class gui():
 
         unit.send_command(serial_protocol.SerialCommands.SET_DEVICE_NAME, value)
 
-        unit.send_command(serial_protocol.SerialCommands.GET_DEVICE_NAME)
-
-        print(unit.receive())
-
-        pass
 
 
 root = Tk()
