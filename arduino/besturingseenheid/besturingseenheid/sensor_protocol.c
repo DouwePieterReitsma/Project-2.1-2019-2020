@@ -196,7 +196,7 @@ void transmit_sensor_data(void)
 	SensorData data;
 	
 	data.temperature = 0; //get_average_temperature_in_celsius();
-	data.light_intensity = 0; //get_average_light_intensity();
+	data.light_intensity = get_average_light_intensity();
 	data.distance = get_distance();
 	
 	char buffer[100];

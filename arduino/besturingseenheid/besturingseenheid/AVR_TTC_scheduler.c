@@ -139,9 +139,8 @@ void SCH_Init_T1(void)
    // Values for 1ms and 10ms ticks are provided for various crystals
 
    // Hier moet de timer periode worden aangepast ....!
-   OCR1A = (uint16_t)6.25;   		     // 10ms = (256/16.000.000) * 625
-   //TCCR1B = (1 << CS12) | (1 << WGM12);  // prescale op 64, top counter = value OCR1A (CTC mode)
-   TCCR1B = (1 << CS11) | (1 << WGM12);
+   OCR1A = (uint16_t)625;   		     // 10ms = (256/16.000.000) * 625
+   TCCR1B = (1 << CS12) | (1 << WGM12);  // prescale op 64, top counter = value OCR1A (CTC mode)
    TIMSK1 = (1 << OCIE1A);   		     // Timer 1 Output Compare A Match Interrupt Enable
 }
 
