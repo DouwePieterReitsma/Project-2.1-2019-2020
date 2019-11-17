@@ -60,7 +60,7 @@ class Gui():
         self.updateradio.start()
 
         # settingframe
-        self.setting_frame = Frame(self.tab1, width=100, height=100)
+        self.setting_frame = Frame(self.tab1)
         # lightframe
         self.light_frame = Frame(self.tab2)
         # tempframe
@@ -75,7 +75,7 @@ class Gui():
         Label(self.setting_frame, text="Geselecteerde unit: " + self.current_unit).pack(anchor=NW, padx=(20, 0),
                                                                                         pady=(5, 5))
 
-        self.buttonsframe = Frame(self.setting_frame, width=100, height=50)
+        self.buttonsframe = Frame(self.setting_frame)
         self.framesies = Frame(self.setting_frame)
 
         ####buttons
@@ -123,18 +123,18 @@ class Gui():
 
         self.setting_frame.pack(anchor=W, fill=Y, expand=False, side=LEFT)
         self.light_frame.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
-        self.buttonsframe.pack(anchor=NW, fill=X, expand=False, side=LEFT, padx=(20, 0))
+        self.buttonsframe.pack(anchor=N, fill=X, padx=(15, 15), pady=(10,20))
         self.tab_parent.pack(expand=1, fill='both')
 
     def show_settings(self):
-        self.framesies.pack(anchor=S, padx=100, pady=10)
+        self.framesies.pack(side=LEFT, pady=(0,20), anchor =NW)
         self.show_settingsbutton.pack_forget()
-        self.hide_settingsbutton.pack()
+        self.hide_settingsbutton.pack(anchor=W)
 
     def hide_settings(self):
         self.framesies.pack_forget()
         self.hide_settingsbutton.pack_forget()
-        self.show_settingsbutton.pack()
+        self.show_settingsbutton.pack(anchor=W)
 
     # handles selection of radiobuttons for selected ports
     def selection1_callback(self):
