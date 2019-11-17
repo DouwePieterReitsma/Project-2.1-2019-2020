@@ -2,8 +2,8 @@ from tkinter import *
 from tkinter import ttk
 import threading
 import update_ports
-import light
-import temp
+import light_plot
+import temperature_plot
 import serial_protocol
 import time
 
@@ -79,7 +79,7 @@ class gui():
         Label(self.setting_frame, text="Geselecteerde unit: " + self.current_unit).pack(anchor=NW, padx=(20,0), pady=(5,5))
 
         self.buttonsframe = Frame(self.setting_frame, width=100, height=50)
-        self.framesies = Frame(self.setting_frame)
+        self.framesies = Frame(self.setting_frame, width=200, height=50)
 
 
         ####buttons
@@ -95,23 +95,9 @@ class gui():
 
         unit = self.updater.return_dict()[self.current_unit]
 
-        unit.send_command(serial_protocol.SerialCommands.GET_MIN_UNROLL_LENGTH)
-
-        # time.sleep(1)
-
-        min_uitrolstand.set(unit.parse_serial(unit.receive())[1])
-
-        unit.send_command(serial_protocol.SerialCommands.GET_MAX_UNROLL_LENGTH)
-
-        # time.sleep(1)
-
-        max_uitrolstand.set(unit.parse_serial(unit.receive())[1])
-
-        unit.send_command(serial_protocol.SerialCommands.GET_DEVICE_NAME)
-
-        # time.sleep(1)
-
-        device_name.set(unit.parse_serial(unit.receive())[1])
+        min_uitrolstand.set(unit.arduino_settings['min_unroll_length'])
+        max_uitrolstand.set(unit.arduino_settings['max_unroll_length'])
+        device_name.set(unit.arduino_settings['device_name'])
 
 
 
@@ -250,6 +236,8 @@ class gui():
         unit = self.updater.return_dict()[self.current_unit]
 
         unit.send_command(serial_protocol.SerialCommands.SET_DEVICE_NAME, value)
+
+        unit.send_command(serial_protocol.SerialCommands.GET_DEVICE_NAME)
 
 
 
