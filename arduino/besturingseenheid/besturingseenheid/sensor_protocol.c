@@ -87,7 +87,7 @@ void process_command(DeviceCommand command, char* param)
 		
 		case GET_TEMPERATURE_THRESHOLD:
 		{
-			sprintf(buffer, "0:%f\r\n", device_config.temperature_threshold);
+			sprintf(buffer, "0:%d:%f\r\n", GET_TEMPERATURE_THRESHOLD, device_config.temperature_threshold);
 			
 			serial_transmit_message(buffer);
 			
@@ -96,7 +96,7 @@ void process_command(DeviceCommand command, char* param)
 		
 		case GET_LIGHT_THRESHOLD:
 		{
-			sprintf(buffer, "0:%f\r\n", device_config.light_intensity_threshold);
+			sprintf(buffer, "0:%d:%f\r\n", GET_LIGHT_THRESHOLD, device_config.light_intensity_threshold);
 			
 			serial_transmit_message(buffer);
 			
@@ -105,7 +105,7 @@ void process_command(DeviceCommand command, char* param)
 		
 		case GET_MAX_UNROLL_LENGTH:
 		{
-			sprintf(buffer, "0:%d\r\n", device_config.max_unroll_distance);
+			sprintf(buffer, "0:%d:%d\r\n", GET_MAX_UNROLL_LENGTH, device_config.max_unroll_distance);
 			
 			serial_transmit_message(buffer);
 			
@@ -115,7 +115,7 @@ void process_command(DeviceCommand command, char* param)
 		
 		case GET_MIN_UNROLL_LENGTH:
 		{
-			sprintf(buffer, "0:%d\r\n", device_config.min_unroll_distance);
+			sprintf(buffer, "0:%d:%d\r\n", GET_MIN_UNROLL_LENGTH, device_config.min_unroll_distance);
 			
 			serial_transmit_message(buffer);
 			
@@ -124,7 +124,7 @@ void process_command(DeviceCommand command, char* param)
 		
 		case GET_DEVICE_NAME:
 		{
-			sprintf(buffer, "0:%s\r\n", device_config.device_name);
+			sprintf(buffer, "0:%d:%s\r\n", GET_DEVICE_NAME, device_config.device_name);
 			
 			serial_transmit_message(buffer);
 			
