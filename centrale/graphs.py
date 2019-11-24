@@ -1,33 +1,28 @@
+import time
 from tkinter import *
 
-from matplotlib import pyplot as plt
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-from matplotlib.backend_bases import key_press_handler
-import pandas as pd
-import time
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
+from matplotlib.figure import Figure
+from matplotlib import style
+import matplotlib.animation as animation
 
-from threading import Thread
-
+style.use('ggplot')
 
 class GraphBase:
     def __init__(self, root, serial_connections):
+        self.root = root
         self.serial_connections = serial_connections
 
-        # store data for each line / arduino
-        self.data = {}
-
-        self.updater = Thread(target=self.update)
-
-        self.updater.daemon = False
-        self.updater.start()
-
-        self.figure = plt.figure(figsize=(5, 4), dpi=100)
+        self.figure = Figure(figsize=(5, 4), dpi=100)
+        self.p = self.figure.add_subplot(111)
 
         self.canvas = FigureCanvasTkAgg(figure=self.figure, master=root)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(expand=YES, fill=BOTH, anchor=W)
 
-    def update(self):
+        self.ani = animation.FuncAnimation(self.figure, self.update, interval=1000)
+
+    def update(self, frame):
         pass
 
 
@@ -37,18 +32,14 @@ class LightGraph(GraphBase):
 
         self.figure.suptitle('Lichtintensiteit')
 
-    def update(self):
-        while True:
-            for k, connection in self.serial_connections.items():
-                self.data[connection.port] = [light for (light, _, _) in connection.data]
+    def update(self, frame):
+        self.p.clear()
 
-            for k, v in self.data.items():
-                plt.plot(range(1, len(v) + 1), v, '.-', label=k)
+        for k, connection in self.serial_connections.items():
+            self.p.plot(range(1, len(connection.light_intensity_data) + 1), connection.light_intensity_data, '.-',
+                        label=k)
 
-            plt.legend()
-            plt.show()
-
-            time.sleep(5)
+        self.p.legend()
 
 
 class TemperatureGraph(GraphBase):
@@ -57,7 +48,11 @@ class TemperatureGraph(GraphBase):
 
         self.figure.suptitle('Temperatuur')
 
-    def update(self):
-        while True:
-            for connection in self.serial_connections:
-                self.data[connection.port] = [temperature for (_, temperature, _) in connection.data]
+    def update(self, frame):
+        self.p.clear()
+
+        for k, connection in self.serial_connections.items():
+            self.p.plot(range(1, len(connection.temperature_data) + 1), connection.temperature_data, '.-',
+                        label=k)
+
+        self.p.legend()

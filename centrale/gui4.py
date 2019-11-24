@@ -67,6 +67,18 @@ class Gui():
         self.temp_frame = Frame(self.tab3)
         self.setting_frame.pack()
 
+        self.light_frame.pack_forget()
+        self.light_frame = Frame(self.tab2, bg="black")
+        LightGraphFrame(self.light_frame, self.updater.return_dict())
+        self.light_frame.pack(anchor=NW, expand=True)
+        self.tab_parent.pack(anchor=NE, expand=0, fill='both')
+
+        self.temp_frame.pack_forget()
+        self.temp_frame = Frame(self.tab3, bg="black")
+        TemperatureGraphFrame(self.temp_frame, self.updater.return_dict())
+        self.temp_frame.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
+        self.tab_parent.pack(expand=1, fill='both')
+
     def make_settings_screen(self, current_unit):
         self.setting_frame.pack_forget()
         self.setting_frame = Frame(self.tab1, width=100, height=100, )
@@ -142,20 +154,22 @@ class Gui():
         self.make_settings_screen(self.current_unit)
 
     def selection2_callback(self):
-        self.current_unit = ("COM" + str(self.radio2.get()))
-        self.light_frame.pack_forget()
-        self.light_frame = Frame(self.tab2, bg="black")
-        LightGraphFrame(self.light_frame, self.updater.return_dict())
-        self.light_frame.pack(anchor=NW, expand=True)
-        self.tab_parent.pack(anchor=NE, expand=0, fill='both')
+        # # self.current_unit = ("COM" + str(self.radio2.get()))
+        # self.light_frame.pack_forget()
+        # self.light_frame = Frame(self.tab2, bg="black")
+        # LightGraphFrame(self.light_frame, self.updater.return_dict())
+        # self.light_frame.pack(anchor=NW, expand=True)
+        # self.tab_parent.pack(anchor=NE, expand=0, fill='both')
+        pass
 
     def selection3_callback(self):
-        self.current_unit = ("COM" + str(self.radio3.get()))
-        self.temp_frame.pack_forget()
-        self.temp_frame = Frame(self.tab3, bg="black")
-        TemperatureGraphFrame(self.temp_frame, self.updater.return_dict())
-        self.temp_frame.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
-        self.tab_parent.pack(expand=1, fill='both')
+        # self.current_unit = ("COM" + str(self.radio3.get()))
+        # self.temp_frame.pack_forget()
+        # self.temp_frame = Frame(self.tab3, bg="black")
+        # TemperatureGraphFrame(self.temp_frame, self.updater.return_dict())
+        # self.temp_frame.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
+        # self.tab_parent.pack(expand=1, fill='both')
+        pass
 
     # function that makes and deletes the radiobuttons according to ports_list
     def radiobuttons(self):
@@ -177,10 +191,11 @@ class Gui():
                 Radiobutton(self.frame1, text=str(port), variable=self.radio1, value=str(port)[3],
                             command=self.selection1_callback).pack(anchor=E,
                                                                    padx=(0, 30))
-                Radiobutton(self.frame2, text=str(port), variable=self.radio2, value=str(port)[3],
+                Checkbutton(self.frame2, text=str(port), variable=self.radio2,
                             command=self.selection2_callback).pack(anchor=E,
                                                                    padx=(0, 30))
-                Radiobutton(self.frame3, text=str(port), variable=self.radio3, value=str(port)[3],
+
+                Checkbutton(self.frame3, text=str(port), variable=self.radio3,
                             command=self.selection3_callback).pack(anchor=E,
                                                                    padx=(0, 30))
                 self.updater.updatePorts()
@@ -234,8 +249,6 @@ class Gui():
         unit = self.updater.return_dict()[self.current_unit]
 
         unit.send_command(serial_protocol.SerialCommands.SET_DEVICE_NAME, value)
-
-        unit.send_command(serial_protocol.SerialCommands.GET_DEVICE_NAME)
 
 
 root = Tk()

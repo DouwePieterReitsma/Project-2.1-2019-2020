@@ -25,12 +25,13 @@ class SerialProtocol:
         self.ser = serial.Serial(port, 19200)
         self.port = port
 
+        self.temperature_data = []
+        self.light_intensity_data = []
+        self.sunshade_status_data = []
+
         time.sleep(3) # arduino reboots every time a serial connection is established
 
-        # list of tuples (light, temperature, sunshade_status)
-        self.data = []
-
-        self.arduino_settings = {'temperature_threshold': 0, 'light_threshold': 0, 'max_unroll_length': 0,
+        self.arduino_settings = {'temperature_threshold': 0.0, 'light_threshold': 0.0, 'max_unroll_length': 0,
                                  'min_unroll_length': 0, 'device_name': ''}
 
         self.receiverThread = threading.Thread(target=self.receive)
@@ -71,30 +72,28 @@ class SerialProtocol:
         fmt = int(args[0])
 
         if fmt == 0:
-            caller = int(args[1]) # which GET_* function is the return value for
+            caller_id = int(args[1]) # which GET_* function is the return value for
             value = args[2]
 
-            if caller == SerialCommands.GET_TEMPERATURE_THRESHOLD:
+            if caller_id == SerialCommands.GET_TEMPERATURE_THRESHOLD:
                 self.arduino_settings['temperature_threshold'] = float(value)
 
-            if caller == SerialCommands.GET_LIGHT_THRESHOLD:
+            if caller_id == SerialCommands.GET_LIGHT_THRESHOLD:
                 self.arduino_settings['light_threshold'] = float(value)
 
-            if caller == SerialCommands.GET_MAX_UNROLL_LENGTH:
+            if caller_id == SerialCommands.GET_MAX_UNROLL_LENGTH:
                 self.arduino_settings['max_unroll_length'] = int(value)
 
-            if caller == SerialCommands.GET_MIN_UNROLL_LENGTH:
+            if caller_id == SerialCommands.GET_MIN_UNROLL_LENGTH:
                 self.arduino_settings['min_unroll_length'] = int(value)
 
-            if caller == SerialCommands.GET_DEVICE_NAME:
+            if caller_id == SerialCommands.GET_DEVICE_NAME:
                 self.arduino_settings['device_name'] = str(value).strip()
 
         if fmt == 1:
-            light = int(args[1])
-            temp = float(args[2])
-            sunshade_status = bool(args[3])
-
-            self.data.append((light, temp, sunshade_status))
+            self.light_intensity_data.append(int(args[1]))
+            self.temperature_data.append(float(args[2]))
+            self.sunshade_status_data.append(bool(args[3]))
 
         if fmt == 3:
             message = args[1]
