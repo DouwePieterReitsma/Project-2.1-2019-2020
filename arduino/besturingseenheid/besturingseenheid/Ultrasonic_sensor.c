@@ -17,8 +17,8 @@ int16_t count_a = 0;
 
 void init_ultrasonic_sensor()
 {
-	DDRB = 0b00001000;
-	DDRD = 0b00000000;
+	DDRB = (1 << TRIGGER_PORT);
+	DDRD &= ~(1 << ECHO_PORT);
 	EICRA = (1<<ISC00);
 	EIMSK = (1<<INT0);
 }

@@ -33,8 +33,6 @@ int main(void)
 
 	load_config();
 
-	rolluik_up();
-
 	
 	SCH_Init_T1();
 	
@@ -46,6 +44,8 @@ int main(void)
 
 	SCH_Add_Task(&measure_distance, 0, 100);
 	
+	SCH_Add_Task(&test_rolluik_leds, 0, 1000);
+	
 	SCH_Add_Task(&transmit_sensor_data, 0, 1000); // test omdat 60 seconden te lang zijn
 //	SCH_Add_Task(&transmit_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
 		
@@ -53,6 +53,13 @@ int main(void)
 	
 	while(1)
 	{
+		/*
+		rolluik_up();
+		_delay_ms(500);
+		rolluik_down();
+		_delay_ms(500);
+		rolluik_going_down(10);*/
+		//test_rolluik_leds();
 		SCH_Dispatch_Tasks();
 	}
 }
