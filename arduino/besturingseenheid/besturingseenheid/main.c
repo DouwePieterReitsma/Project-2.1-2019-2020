@@ -33,8 +33,6 @@ int main(void)
 
 	load_config();
 
-	rolluik_up();
-
 	
 	SCH_Init_T1();
 	
@@ -45,6 +43,8 @@ int main(void)
  	SCH_Add_Task(&calculate_average_light_intensity, 300, 300); // measure light intensity every second
 
 	SCH_Add_Task(&measure_distance, 0, 100);
+	
+	SCH_Add_Task(&test_rolluik_leds, 0, 1000);
 	
 	SCH_Add_Task(&transmit_sensor_data, 0, 1000); // test omdat 60 seconden te lang zijn
 //	SCH_Add_Task(&transmit_sensor_data, 6000, 6000); // transmit sensor data temperature every 60 seconds
