@@ -53,13 +53,6 @@ int main(void)
 	
 	while(1)
 	{
-		/*
-		rolluik_up();
-		_delay_ms(500);
-		rolluik_down();
-		_delay_ms(500);
-		rolluik_going_down(10);*/
-		//test_rolluik_leds();
 		SCH_Dispatch_Tasks();
 	}
 }
