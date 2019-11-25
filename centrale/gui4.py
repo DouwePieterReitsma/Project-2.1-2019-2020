@@ -1,30 +1,19 @@
 from tkinter import *
 from tkinter import ttk
 import threading
-import update_ports
-import graphs
+import devicedetector
+from graphs import (TemperatureGraph, LightGraph)
 import serial_protocol
+import time
 
 
-class LightGraphFrame:
-    def __init__(self, rt, ser):
-        self.frame = rt
-        self.light_graph = graphs.LightGraph(self.frame, ser)
-
-
-class TemperatureGraphFrame:
-    def __init__(self, rt, ser):
-        self.frame = rt
-        self.temperature_graph = graphs.TemperatureGraph(self.frame, ser)
-
-
-class Gui():
+class Gui:
     def __init__(self, root):
         self.frame = root
-        self.updater = update_ports.update_ports(self.frame)
+        self.updater = devicedetector.DeviceDetector()
         self.current_unit = ''
-        self.frame.title("Zonnescherm bediening")
-        self.frame.geometry("1200x800")
+        self.frame.title("Zonneschermbediening")
+        self.frame.geometry("800x600")
 
         # tabs
         self.tab_parent = ttk.Notebook(self.frame)
@@ -33,69 +22,68 @@ class Gui():
         self.tab3 = Frame(self.tab_parent)
 
         # label for devices available
-        self.deviceslabelframe = Frame(self.tab1, width=1200, height=20)
-        self.deviceslabelframe.pack(anchor=N, fill=Y, expand=False)
-        self.deviceslabelframe = Frame(self.tab2, width=1200, height=20)
-        self.deviceslabelframe.pack(anchor=N, fill=Y, expand=False)
-        self.deviceslabelframe = Frame(self.tab3, width=1200, height=20)
-        self.deviceslabelframe.pack(anchor=N, fill=Y, expand=False)
+        # self.deviceslabelframe = Frame(self.tab1, height=100)
+        # self.deviceslabelframe.grid(column=1)
+        # self.deviceslabelframe = Frame(self.tab2, height=100)
+        # self.deviceslabelframe.grid(column=1)
+        # self.deviceslabelframe = Frame(self.tab3, height=100)
+        # self.deviceslabelframe.grid(column=1)
 
         self.tab_parent.add(self.tab1, text="Instellingen")
         self.tab_parent.add(self.tab2, text="Licht")
         self.tab_parent.add(self.tab3, text="Temperatuur")
-        self.tab_parent.pack(expand=1, fill='both')
+        # self.tab_parent.pack(expand=1, fill='both')
 
         # initializes frames for the radiobuttons that hold the available ports options
-        self.frame1 = Frame(self.tab1)
-        self.frame2 = Frame(self.tab2)
-        self.frame3 = Frame(self.tab3)
+        self.deviceButtonsFrame1 = Frame(self.tab1, width=100, height=100)
+        self.deviceButtonsFrame2 = Frame(self.tab2, width=100, height=100)
+        self.deviceButtonsFrame3 = Frame(self.tab3, width=100, height=100)
 
         # radio buttons listeners
         self.radio1 = IntVar()
         self.radio2 = IntVar()
         self.radio3 = IntVar()
 
-        # update the radiobuttons for ports
-        self.updateradio = threading.Thread(target=self.radiobuttons(), args=(1,))
+        # update
+        self.updateradio = threading.Thread(target=self.radiobuttons)
+        self.updateradio.daemon = True
         self.updateradio.start()
 
         # settingframe
-        self.setting_frame = Frame(self.tab1)
-        # lightframe
-        self.light_frame = Frame(self.tab2)
-        # tempframe
-        self.temp_frame = Frame(self.tab3)
-        self.setting_frame.pack()
+        self.setting_frame = Frame(self.tab1, width=400)
+        self.setting_frame.grid(row=0, column=0)
 
-        self.light_frame.pack_forget()
+        # inner settings frame
+        self.inner_settings_frame = Frame(self.setting_frame)
+
         self.light_frame = Frame(self.tab2, bg="black")
-        LightGraphFrame(self.light_frame, self.updater.return_dict())
-        self.light_frame.pack(anchor=NW, expand=True)
+        self.light_graph = LightGraph(self.light_frame, self.updater.return_dict())
+        self.light_frame.grid(row=0, column=0)
+
+        self.temp_frame = Frame(self.tab3, bg="black")
+        self.temp_graph = TemperatureGraph(self.temp_frame, self.updater.return_dict())
+        self.temp_frame.grid(row=0, column=0)
+
         self.tab_parent.pack(anchor=NE, expand=0, fill='both')
 
-        self.temp_frame.pack_forget()
-        self.temp_frame = Frame(self.tab3, bg="black")
-        TemperatureGraphFrame(self.temp_frame, self.updater.return_dict())
-        self.temp_frame.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
-        self.tab_parent.pack(expand=1, fill='both')
-
     def make_settings_screen(self, current_unit):
-        self.setting_frame.pack_forget()
-        self.setting_frame = Frame(self.tab1, width=100, height=100, )
+        self.inner_settings_frame.grid_forget()
+        self.inner_settings_frame = Frame(self.setting_frame)
+        self.inner_settings_frame.grid()
 
         self.current_unit = current_unit
-        Label(self.setting_frame, text="Geselecteerde unit: " + self.current_unit).pack(anchor=NW, padx=(20, 0),
-                                                                                        pady=(5, 5))
+        Label(self.inner_settings_frame, text="Geselecteerde unit: " + self.current_unit).pack(anchor=NW, padx=(13, 0),
+                                                                                               pady=(5, 5))
 
-        self.buttonsframe = Frame(self.setting_frame)
-        self.framesies = Frame(self.setting_frame)
+        self.buttonsframe = Frame(self.inner_settings_frame)
+        self.framesies = Frame(self.inner_settings_frame)
 
-        ####buttons
-        self.show_settingsbutton = Button(self.buttonsframe, text="settings", command=self.show_settings)
-        self.hide_settingsbutton = Button(self.buttonsframe, text="hide settings", command=self.hide_settings)
+        # buttons
+        self.show_settingsbutton = Button(self.buttonsframe, text="Instellingen", command=self.show_settings)
+        self.hide_settingsbutton = Button(self.buttonsframe, text="Instellingen verbergen", command=self.hide_settings)
 
-        ON = Button(self.buttonsframe, text="ON", command=self.on_button_callback)
-        OFF = Button(self.buttonsframe, text="OFF", command=self.off_button_callback)
+        ON = Button(self.buttonsframe, text="Aan", command=self.on_button_callback)
+        OFF = Button(self.buttonsframe, text="Uit", command=self.off_button_callback)
 
         min_uitrolstand = IntVar()
         max_uitrolstand = IntVar()
@@ -109,15 +97,16 @@ class Gui():
 
         MinLabelTabOne = Label(self.framesies, text="Minimale oprol:")
         MaxLabelTabOne = Label(self.framesies, text="Maximale uitrol:")
-        DeviceNameLabelTabOne = Label(self.framesies, text="Device name")
+        DeviceNameLabelTabOne = Label(self.framesies, text="Apparaatnaam:")
         MinEntryTabOne = Entry(self.framesies, textvariable=min_uitrolstand)
         MaxEntryTabOne = Entry(self.framesies, textvariable=max_uitrolstand)
         DeviceNameEntryTabOne = Entry(self.framesies, textvariable=device_name)
-        sendButton1 = Button(self.framesies, text="Send",
+        sendButton1 = Button(self.framesies, text="Opslaan",
                              command=lambda: self.send_button1_callback(min_uitrolstand.get()))
-        sendButton2 = Button(self.framesies, text="Send",
+        sendButton2 = Button(self.framesies, text="Opslaan",
                              command=lambda: self.send_button2_callback(max_uitrolstand.get()))
-        sendButton3 = Button(self.framesies, text="Send", command=lambda: self.send_button3_callback(device_name.get()))
+        sendButton3 = Button(self.framesies, text="Opslaan",
+                             command=lambda: self.send_button3_callback(device_name.get()))
 
         ON.pack(anchor=W)
         OFF.pack(anchor=W)
@@ -127,19 +116,16 @@ class Gui():
         MinEntryTabOne.grid(row=3, column=1, padx=15)
         MaxLabelTabOne.grid(row=4, column=0, padx=15, pady=15)
         MaxEntryTabOne.grid(row=4, column=1, padx=15, pady=15)
-        DeviceNameLabelTabOne.grid(row=5, column=0, padx=15, pady=15)
+        DeviceNameLabelTabOne.grid(row=5, column=0, padx=0, pady=15)
         DeviceNameEntryTabOne.grid(row=5, column=1, padx=15, pady=15)
         sendButton1.grid(row=3, column=3, padx=15, pady=15)
         sendButton2.grid(row=4, column=3, padx=15, pady=15)
         sendButton3.grid(row=5, column=3, padx=15, pady=15)
 
-        self.setting_frame.pack(anchor=W, fill=Y, expand=False, side=LEFT)
-        self.light_frame.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
-        self.buttonsframe.pack(anchor=N, fill=X, padx=(15, 15), pady=(10,20))
-        self.tab_parent.pack(expand=1, fill='both')
+        self.buttonsframe.pack(anchor=N, fill=X, padx=(15, 15), pady=(10, 20))
 
     def show_settings(self):
-        self.framesies.pack(side=LEFT, pady=(0,20), anchor =NW)
+        self.framesies.pack(side=LEFT, pady=(0, 20), anchor=NW)
         self.show_settingsbutton.pack_forget()
         self.hide_settingsbutton.pack(anchor=W)
 
@@ -153,62 +139,51 @@ class Gui():
         self.current_unit = ("COM" + str(self.radio1.get()))
         self.make_settings_screen(self.current_unit)
 
-    def selection2_callback(self):
-        # # self.current_unit = ("COM" + str(self.radio2.get()))
-        # self.light_frame.pack_forget()
-        # self.light_frame = Frame(self.tab2, bg="black")
-        # LightGraphFrame(self.light_frame, self.updater.return_dict())
-        # self.light_frame.pack(anchor=NW, expand=True)
-        # self.tab_parent.pack(anchor=NE, expand=0, fill='both')
-        pass
+    def light_graph_line_toggle_callback(self, port):
+        self.light_graph.set_line_visibility(port, bool(self.radio2.get()))
 
-    def selection3_callback(self):
-        # self.current_unit = ("COM" + str(self.radio3.get()))
-        # self.temp_frame.pack_forget()
-        # self.temp_frame = Frame(self.tab3, bg="black")
-        # TemperatureGraphFrame(self.temp_frame, self.updater.return_dict())
-        # self.temp_frame.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
-        # self.tab_parent.pack(expand=1, fill='both')
-        pass
+    def temp_graph_line_toggle_callback(self, port):
+        self.temp_graph.set_line_visibility(port, bool(self.radio3.get()))
 
     # function that makes and deletes the radiobuttons according to ports_list
     def radiobuttons(self):
+        while True:
+            self.updater.detect_devices()
 
-        self.frame1.pack_forget()
-        self.frame2.pack_forget()
-        self.frame3.pack_forget()
-        self.frame1 = Frame(self.tab1, width=100, height=100)
-        self.frame2 = Frame(self.tab2, width=100, height=100)
-        self.frame3 = Frame(self.tab3, width=100, height=100)
+            self.deviceButtonsFrame1.grid_forget()
+            self.deviceButtonsFrame2.grid_forget()
+            self.deviceButtonsFrame3.grid_forget()
 
-        self.updateports = threading.Thread(target=self.updater.updatePorts(), args=(0,))
-        self.updateports.start()
+            self.deviceButtonsFrame1 = Frame(self.tab1, width=100, height=100)
+            self.deviceButtonsFrame2 = Frame(self.tab2, width=100, height=100)
+            self.deviceButtonsFrame3 = Frame(self.tab3, width=100, height=100)
 
-        if len(self.updater.return_ports_list()) > 0:
+            if len(self.updater.return_ports_list()) > 0:
+                for k, connection in self.updater.return_dict().items():
+                    i = 0
+                    Radiobutton(self.deviceButtonsFrame1, text=connection.port, variable=self.radio1,
+                                value=str(connection.port)[3],
+                                command=self.selection1_callback).pack(anchor=E,
+                                                                       padx=(0, 30))
+                    Checkbutton(self.deviceButtonsFrame2, text=connection.port, variable=self.radio2,
+                                command=lambda: self.light_graph_line_toggle_callback(connection.port)).pack(anchor=E,
+                                                                                    padx=(0, 30))
 
-            for port in self.updater.return_ports_list():
-                i = 0
-                Radiobutton(self.frame1, text=str(port), variable=self.radio1, value=str(port)[3],
-                            command=self.selection1_callback).pack(anchor=E,
-                                                                   padx=(0, 30))
-                Checkbutton(self.frame2, text=str(port), variable=self.radio2,
-                            command=self.selection2_callback).pack(anchor=E,
-                                                                   padx=(0, 30))
+                    Checkbutton(self.deviceButtonsFrame3, text=connection.port, variable=self.radio3,
+                                command=lambda: self.temp_graph_line_toggle_callback(connection.port)).pack(anchor=E,
+                                                                                   padx=(0, 30))
+                    self.updater.detect_devices()
+                    i += 1
 
-                Checkbutton(self.frame3, text=str(port), variable=self.radio3,
-                            command=self.selection3_callback).pack(anchor=E,
-                                                                   padx=(0, 30))
-                self.updater.updatePorts()
-                i += 1
+                self.deviceButtonsFrame1.grid_forget()
+                self.deviceButtonsFrame2.grid_forget()
+                self.deviceButtonsFrame3.grid_forget()
 
-            self.frame1.pack_forget()
-            self.frame2.pack_forget()
-            self.frame3.pack_forget()
+            self.deviceButtonsFrame1.grid(row=0, column=1)
+            self.deviceButtonsFrame2.grid(row=0, column=1)
+            self.deviceButtonsFrame3.grid(row=0, column=1)
 
-        self.frame1.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
-        self.frame2.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
-        self.frame3.pack(anchor=E, fill=Y, expand=False, side=RIGHT)
-        self.frame.after(1000, self.radiobuttons)
+            time.sleep(1)
 
     def on_button_callback(self):
         if self.current_unit == '':

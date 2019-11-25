@@ -27,7 +27,7 @@ class SerialProtocol:
 
         self.temperature_data = []
         self.light_intensity_data = []
-        self.sunshade_status_data = []
+        self.sunshades_rolled_out = False
 
         time.sleep(3) # arduino reboots every time a serial connection is established
 
@@ -93,7 +93,7 @@ class SerialProtocol:
         if fmt == 1:
             self.light_intensity_data.append(int(args[1]))
             self.temperature_data.append(float(args[2]))
-            self.sunshade_status_data.append(bool(args[3]))
+            self.sunshades_rolled_out = bool(args[3])
 
         if fmt == 3:
             message = args[1]

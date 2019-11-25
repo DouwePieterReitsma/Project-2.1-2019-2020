@@ -3,20 +3,17 @@ import serial.tools.list_ports
 import threading
 import serial_protocol
 
-class update_ports():
 
-    def __init__(self, frame):
+class DeviceDetector:
+    def __init__(self):
         self.ports_list = []
         self.dict = {}
-        self.update = threading.Thread(target=self.updatePorts(), args=(1,))
+        self.update = threading.Thread(target=self.detect_devices(), args=(1,))
         self.update.start()
 
-    def updatePorts(self):
+    def detect_devices(self):
         ports = list(serial.tools.list_ports.comports())
         for p in ports:
-            # if "Arduino" in p[1] and p[0] not in self.ports_list:
-            #     self.ports_list.append(p[0])
-            #     self.dict[str(p[0])] = serial.Serial(p[0], 19200)
             if p[0] not in self.ports_list:
                 self.ports_list.append(p[0])
                 self.dict[str(p[0])] = serial_protocol.SerialProtocol(p[0])
@@ -39,5 +36,3 @@ class update_ports():
 
     def return_dict(self):
         return self.dict
-
-
