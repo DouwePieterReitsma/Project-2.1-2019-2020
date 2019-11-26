@@ -21,14 +21,6 @@ class Gui:
         self.tab2 = Frame(self.tab_parent)
         self.tab3 = Frame(self.tab_parent)
 
-        # label for devices available
-        # self.deviceslabelframe = Frame(self.tab1, height=100)
-        # self.deviceslabelframe.grid(column=1)
-        # self.deviceslabelframe = Frame(self.tab2, height=100)
-        # self.deviceslabelframe.grid(column=1)
-        # self.deviceslabelframe = Frame(self.tab3, height=100)
-        # self.deviceslabelframe.grid(column=1)
-
         self.tab_parent.add(self.tab1, text="Instellingen")
         self.tab_parent.add(self.tab2, text="Licht")
         self.tab_parent.add(self.tab3, text="Temperatuur")
@@ -72,6 +64,8 @@ class Gui:
         self.inner_settings_frame.grid()
 
         self.current_unit = current_unit
+        unit = self.updater.return_dict()[self.current_unit]
+
         Label(self.inner_settings_frame, text="Geselecteerde unit: " + self.current_unit).pack(anchor=NW, padx=(13, 0),
                                                                                                pady=(5, 5))
 
@@ -82,14 +76,14 @@ class Gui:
         self.show_settingsbutton = Button(self.buttonsframe, text="Instellingen", command=self.show_settings)
         self.hide_settingsbutton = Button(self.buttonsframe, text="Instellingen verbergen", command=self.hide_settings)
 
-        ON = Button(self.buttonsframe, text="Aan", command=self.on_button_callback)
-        OFF = Button(self.buttonsframe, text="Uit", command=self.off_button_callback)
+        self.toggle_mode_button = Button(self.buttonsframe, text='Handmatige modus', command=lambda: self.toggle_mode_button_callback(unit))
+
+        self.on_button = Button(self.buttonsframe, text="Aan", state=DISABLED, command=self.on_button_callback)
+        self.off_button = Button(self.buttonsframe, text="Uit", state=DISABLED,  command=self.off_button_callback)
 
         min_uitrolstand = IntVar()
         max_uitrolstand = IntVar()
         device_name = StringVar()
-
-        unit = self.updater.return_dict()[self.current_unit]
 
         min_uitrolstand.set(unit.arduino_settings['min_unroll_length'])
         max_uitrolstand.set(unit.arduino_settings['max_unroll_length'])
@@ -108,8 +102,9 @@ class Gui:
         sendButton3 = Button(self.framesies, text="Opslaan",
                              command=lambda: self.send_button3_callback(device_name.get()))
 
-        ON.pack(anchor=W)
-        OFF.pack(anchor=W)
+        self.toggle_mode_button.pack(anchor=W)
+        self.on_button.pack(anchor=W)
+        self.off_button.pack(anchor=W)
         self.show_settingsbutton.pack(anchor=W)
 
         MinLabelTabOne.grid(row=3, column=0, padx=15)
@@ -184,6 +179,22 @@ class Gui:
             self.deviceButtonsFrame3.grid(row=0, column=1)
 
             time.sleep(1)
+
+    def toggle_mode_button_callback(self, unit):
+        unit.arduino_settings['automatic_mode'] = not unit.arduino_settings['automatic_mode']
+
+        if unit.arduino_settings['automatic_mode']:
+            self.toggle_mode_button.configure(text='Handmatige modus')
+
+            self.on_button.configure(state=DISABLED)
+            self.off_button.configure(state=DISABLED)
+        else:
+            self.toggle_mode_button.configure(text='Automatische modus')
+
+            self.on_button.configure(state=NORMAL)
+            self.off_button.configure(state=NORMAL)
+
+        unit.send_command(serial_protocol.SerialCommands.TOGGLE_AUTOMATIC_MODE)
 
     def on_button_callback(self):
         if self.current_unit == '':

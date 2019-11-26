@@ -4,6 +4,7 @@ from enum import IntEnum
 import time
 import threading
 
+
 class SerialCommands(IntEnum):
     SET_TEMPERATURE_THRESHOLD = 0
     SET_LIGHT_THRESHOLD = 1
@@ -20,6 +21,7 @@ class SerialCommands(IntEnum):
     ROLL_SUNSHADES_DOWN = 12
     FACTORY_RESET = 13
 
+
 class SerialProtocol:
     def __init__(self, port):
         self.ser = serial.Serial(port, 19200)
@@ -29,10 +31,10 @@ class SerialProtocol:
         self.light_intensity_data = []
         self.sunshades_rolled_out = False
 
-        time.sleep(3) # arduino reboots every time a serial connection is established
+        time.sleep(3)  # arduino reboots every time a serial connection is established
 
         self.arduino_settings = {'temperature_threshold': 0.0, 'light_threshold': 0.0, 'max_unroll_length': 0,
-                                 'min_unroll_length': 0, 'device_name': ''}
+                                 'min_unroll_length': 0, 'device_name': '', 'automatic_mode': True}
 
         self.receiverThread = threading.Thread(target=self.receive)
         self.receiverThread.daemon = True
@@ -72,7 +74,7 @@ class SerialProtocol:
         fmt = int(args[0])
 
         if fmt == 0:
-            caller_id = int(args[1]) # which GET_* function is the return value for
+            caller_id = int(args[1])  # which GET_* function is the return value for
             value = args[2]
 
             if caller_id == SerialCommands.GET_TEMPERATURE_THRESHOLD:
@@ -105,8 +107,3 @@ if __name__ == '__main__':
     test = SerialProtocol(port='COM6')
 
     print('test')
-
-
-
-
-

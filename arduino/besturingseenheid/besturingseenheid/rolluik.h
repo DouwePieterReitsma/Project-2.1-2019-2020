@@ -13,6 +13,6 @@ void rolluik_going_up(int timer);
 
 int rolluik_is_rolled_down(void);
 void test_rolluik_leds(void);
-void turn_of_all_leds(void);
+void turn_off_all_leds(void);
 
 #endif /* ROLLUIK_H_ */
