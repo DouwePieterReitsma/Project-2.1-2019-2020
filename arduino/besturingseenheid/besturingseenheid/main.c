@@ -55,7 +55,7 @@ int main(void)
 	{
 		parse_python_input();
 		
-		measure_distance();
+		//measure_distance();
 		
 		SCH_Dispatch_Tasks();
 	}

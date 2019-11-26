@@ -55,17 +55,17 @@ void calculate_average_light_intensity(void)
 	averageLightIntensity /= NUM_LIGHTINTENSITIES;
 	
 	//// automatic controls
-	//if (device_config.automatic_mode)
-	//{
-		//if (averageLightIntensity >= device_config.light_intensity_threshold && !rolluik_is_rolled_down())
-		//{
-			//rolluik_going_down(10);
-			//rolluik_down();
-		//}
-		//else if(averageLightIntensity < device_config.light_intensity_threshold && rolluik_is_rolled_down())
-		//{
-			//rolluik_going_up(10);
-			//rolluik_up();
-		//}
-	//}
+	if (device_config.automatic_mode)
+	{
+		if (averageLightIntensity >= device_config.light_intensity_threshold && !rolluik_is_rolled_down())
+		{
+			rolluik_going_down(10);
+			rolluik_down();
+		}
+		else if(averageLightIntensity < device_config.light_intensity_threshold && rolluik_is_rolled_down())
+		{
+			rolluik_going_up(10);
+			rolluik_up();
+		}
+	}
 }

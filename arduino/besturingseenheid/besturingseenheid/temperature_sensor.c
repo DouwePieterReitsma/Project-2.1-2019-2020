@@ -59,17 +59,17 @@ void calculate_average_temperature(void)
 	
 	
 	//// automatic controls
-	//if (device_config.automatic_mode)
-	//{
-		//if (average_temperature >= device_config.temperature_threshold && !rolluik_is_rolled_down())
-		//{
-			//rolluik_going_down(10);
-			//rolluik_down();
-		//}
-		//else if(average_temperature < device_config.temperature_threshold && rolluik_is_rolled_down())
-		//{
-			//rolluik_going_up(10);
-			//rolluik_up();
-		//}
-	//}
+	if (device_config.automatic_mode)
+	{
+		if (average_temperature >= device_config.temperature_threshold && !rolluik_is_rolled_down())
+		{
+			rolluik_going_down(10);
+			rolluik_down();
+		}
+		else if(average_temperature < device_config.temperature_threshold && rolluik_is_rolled_down())
+		{
+			rolluik_going_up(10);
+			rolluik_up();
+		}
+	}
 }
