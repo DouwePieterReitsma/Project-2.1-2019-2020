@@ -76,7 +76,7 @@ class Gui:
         self.show_settingsbutton = Button(self.buttonsframe, text="Instellingen", command=self.show_settings)
         self.hide_settingsbutton = Button(self.buttonsframe, text="Instellingen verbergen", command=self.hide_settings)
 
-        self.toggle_mode_button = Button(self.buttonsframe, text='Handmatige modus', command=lambda: self.toggle_mode_button_callback(unit))
+        self.toggle_mode_button = Button(self.buttonsframe, text='Toggle Handmatige modus', command=lambda: self.toggle_mode_button_callback(unit))
 
         self.on_button = Button(self.buttonsframe, text="Aan", state=DISABLED, command=self.on_button_callback)
         self.off_button = Button(self.buttonsframe, text="Uit", state=DISABLED,  command=self.off_button_callback)
@@ -84,23 +84,37 @@ class Gui:
         min_uitrolstand = IntVar()
         max_uitrolstand = IntVar()
         device_name = StringVar()
+        temp_threshold = IntVar()
+        light_threshold = IntVar()
 
         min_uitrolstand.set(unit.arduino_settings['min_unroll_length'])
         max_uitrolstand.set(unit.arduino_settings['max_unroll_length'])
         device_name.set(unit.arduino_settings['device_name'])
+        light_threshold.set(unit.arduino_settings['light_threshold'])
+        temp_threshold.set(unit.arduino_settings['temperature_threshold'])
 
         MinLabelTabOne = Label(self.framesies, text="Minimale oprol:")
         MaxLabelTabOne = Label(self.framesies, text="Maximale uitrol:")
         DeviceNameLabelTabOne = Label(self.framesies, text="Apparaatnaam:")
+        TemperatureThresholdLabel = Label(self.framesies, text='Drempelwaarde temperatuur:')
+        LightThresholdLabel = Label(self.framesies, text='Drempelwaarde licht:')
+
         MinEntryTabOne = Entry(self.framesies, textvariable=min_uitrolstand)
         MaxEntryTabOne = Entry(self.framesies, textvariable=max_uitrolstand)
         DeviceNameEntryTabOne = Entry(self.framesies, textvariable=device_name)
+        LightThresholdEntry = Entry(self.framesies, textvariable=light_threshold)
+        TemperatureThresholdEntry = Entry(self.framesies, textvariable=temp_threshold)
+
         sendButton1 = Button(self.framesies, text="Opslaan",
                              command=lambda: self.send_button1_callback(min_uitrolstand.get()))
         sendButton2 = Button(self.framesies, text="Opslaan",
                              command=lambda: self.send_button2_callback(max_uitrolstand.get()))
         sendButton3 = Button(self.framesies, text="Opslaan",
                              command=lambda: self.send_button3_callback(device_name.get()))
+        sendButton4 = Button(self.framesies, text="Opslaan",
+                             command=lambda: self.send_button4_callback(light_threshold.get()))
+        sendButton5 = Button(self.framesies, text="Opslaan",
+                             command=lambda: self.send_button5_callback(temp_threshold.get()))
 
         self.toggle_mode_button.pack(anchor=W)
         self.on_button.pack(anchor=W)
@@ -111,11 +125,18 @@ class Gui:
         MinEntryTabOne.grid(row=3, column=1, padx=15)
         MaxLabelTabOne.grid(row=4, column=0, padx=15, pady=15)
         MaxEntryTabOne.grid(row=4, column=1, padx=15, pady=15)
-        DeviceNameLabelTabOne.grid(row=5, column=0, padx=0, pady=15)
-        DeviceNameEntryTabOne.grid(row=5, column=1, padx=15, pady=15)
+        DeviceNameLabelTabOne.grid(row=5, column=0, padx=0)
+        DeviceNameEntryTabOne.grid(row=5, column=1, padx=15)
+        LightThresholdLabel.grid(row=6, column=0, padx=15)
+        LightThresholdEntry.grid(row=6, column=1, padx=15)
+        TemperatureThresholdLabel.grid(row=7, column=0, padx=15)
+        TemperatureThresholdEntry.grid(row=7, column=1, padx=15)
+
         sendButton1.grid(row=3, column=3, padx=15, pady=15)
         sendButton2.grid(row=4, column=3, padx=15, pady=15)
         sendButton3.grid(row=5, column=3, padx=15, pady=15)
+        sendButton4.grid(row=6, column=3, padx=15, pady=15)
+        sendButton5.grid(row=7, column=3, padx=15, pady=15)
 
         self.buttonsframe.pack(anchor=N, fill=X, padx=(15, 15), pady=(10, 20))
 
@@ -184,12 +205,12 @@ class Gui:
         unit.arduino_settings['automatic_mode'] = not unit.arduino_settings['automatic_mode']
 
         if unit.arduino_settings['automatic_mode']:
-            self.toggle_mode_button.configure(text='Handmatige modus')
+            self.toggle_mode_button.configure(text='Toggle Handmatige modus')
 
             self.on_button.configure(state=DISABLED)
             self.off_button.configure(state=DISABLED)
         else:
-            self.toggle_mode_button.configure(text='Automatische modus')
+            self.toggle_mode_button.configure(text='Toggle Automatische modus')
 
             self.on_button.configure(state=NORMAL)
             self.off_button.configure(state=NORMAL)
@@ -235,6 +256,22 @@ class Gui:
         unit = self.updater.return_dict()[self.current_unit]
 
         unit.send_command(serial_protocol.SerialCommands.SET_DEVICE_NAME, value)
+
+    def send_button4_callback(self, value):
+        if self.current_unit == '':
+            return
+
+        unit = self.updater.return_dict()[self.current_unit]
+
+        unit.send_command(serial_protocol.SerialCommands.SET_LIGHT_THRESHOLD, value)
+
+    def send_button5_callback(self, value):
+        if self.current_unit == '':
+            return
+
+        unit = self.updater.return_dict()[self.current_unit]
+
+        unit.send_command(serial_protocol.SerialCommands.SET_TEMPERATURE_THRESHOLD, value)
 
 
 root = Tk()
